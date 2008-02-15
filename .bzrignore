@@ -4,3 +4,4 @@ output_*
 stderr.log
 stdout.log
 *.junk
+output
