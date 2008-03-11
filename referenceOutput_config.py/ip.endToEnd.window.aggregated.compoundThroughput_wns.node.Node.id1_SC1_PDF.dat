@@ -9,24 +9,24 @@
 # ---------------------------------------------------------------------------
 #  Common Statistics 
 #  Minimum: 167.0000000
-#  Maximum: 169.0000000
+#  Maximum: 170.0000000
 #  Trials: 6
-#  Mean: 168.5000000
+#  Mean: 168.9166667
 # 
-#  Variance: 0.6000000
-#  Relative variance: 0.0000211
-#  Coefficient of variation: 0.0045970
-#  Standard deviation: 0.7745967
-#  Relative standard deviation: 0.0045970
+#  Variance: 1.0416667
+#  Relative variance: 0.0000365
+#  Coefficient of variation: 0.0060422
+#  Standard deviation: 1.0206207
+#  Relative standard deviation: 0.0060422
 # 
-#  Skewness: -1.0758287
+#  Skewness: -0.8731070
 # 
-#  2nd moment: 28392.7500000
-#  3rd moment: 4784346.3750000
+#  2nd moment: 28533.7083333
+#  3rd moment: 4820111.2291667
 # 
-#  Sum of all values: 1011.0000000
-#  (Sum of all values)^2: 170356.5000000
-#  (Sum of all values)^3: 28706078.2500000
+#  Sum of all values: 1013.5000000
+#  (Sum of all values)^2: 171202.2500000
+#  (Sum of all values)^3: 28920667.3750000
 # -----------------------------------------------------------
 # PDF statistics 
 #  Left border of x-axis: 0
@@ -40,11 +40,11 @@
 #  Overflows in percent: 0
 # -----------------------------------------------------------
 # Percentiles
-#  P01: 160.0900000
-#  P05: 160.4500000
-#  P50: 164.5000000
-#  P95: 168.5500000
-#  P99: 168.9100000
+#  P01: 160.1000000
+#  P05: 160.5000000
+#  P50: 165.0000000
+#  P95: 169.5000000
+#  P99: 169.9000000
 # -----------------------------------------------------------
 # 
 # x_n                  F(x_n)           G(x_n)     P(x_n-1 < X    n
