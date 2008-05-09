@@ -13,6 +13,7 @@ import constanze.Constanze
 import constanze.Node
 
 import wifimac.support.NodeCreator
+import wifimac.support.Config
 import wifimac.ProbeBus
 import wifimac.PathSelection
 
@@ -52,7 +53,7 @@ startDelayUL = 1.01
 startDelayDL = 1.02
 
 # Available frequencies for bss and backbone, in MHz
-meshFrequencies = [5500]
+meshFrequency = 5500
 bssFrequencies = [2400, 2440, 2480]
 # End simulation parameters
 ###########################
@@ -81,7 +82,7 @@ riseConfig.debug.main = (commonLoggerLevel > 1)
 ofdmaPhyConfig = WNS.modules.ofdmaPhy
 managerPool = wifimac.support.NodeCreator.ManagerPool(xSize = scenarioXSize,
                                                       ySize = scenarioYSize,
-                                                      maxNumRadios = len(meshFrequencies)+1,
+                                                      maxNumRadios = 2,
                                                       ofdmaPhyConfig = ofdmaPhyConfig)
 # End create scenario
 #####################
@@ -137,7 +138,7 @@ vdns.logger.level = commonLoggerLevel
 WNS.nodes.append(vdns)
 
 # One virtual pathselection server
-vps = wifimac.PathSelection.VirtualPSServer("VPS", numNodes = (numSTAs + (numMPs+2)*(len(meshFrequencies)+1) + 1))
+vps = wifimac.PathSelection.VirtualPSServer("VPS", numNodes = (numSTAs + (numMPs+2)*2 + 1))
 vps.logger.level = dllLoggerLevel
 WNS.nodes.append(vps)
 
@@ -154,14 +155,19 @@ mpAdrs = []
 # selection of the BSS-frequency: iterating over the BSS-set
 bssCount = 0
 
+# configuration class for mesh transceiver
+class MyMeshTransceiver(wifimac.support.Config.MeshTransceiver):
+    def __init__(self, beaconDelay, frequency, forwarding):
+        super(MyMeshTransceiver, self).__init__(frequency, forwarding)
+        self.layer2.beacon.delay = beaconDelay
+
 # One AP at the beginning
-f = [bssFrequencies[bssCount % len(bssFrequencies)]]
-f.extend(meshFrequencies)
+apConfig = wifimac.support.Config.Node(position = wns.Position(distanceBetweenMPs/2, 0, 0))
+apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001, frequency = bssFrequencies[bssCount % len(bssFrequencies)], forwarding = False))
+apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001, frequency = meshFrequency, forwarding = True))
 ap = nc.createAP(idGen = idGen,
-              	 position = wns.Position(distanceBetweenMPs/2, 0, 0),
-                 beaconDelay = 0.001,
                  managerPool = managerPool,
-                 frequencies = f)
+                 config = apConfig)
 ap.logger.level = commonLoggerLevel
 ap.dll.logger.level = dllLoggerLevel
 WNS.nodes.append(ap)
@@ -173,13 +179,12 @@ print "Created AP at (", distanceBetweenMPs/2, ", 0, 0) with id ", ap.id, " and 
 # Create MPs
 for i in xrange(numMPs):
     bssCount+=1
-    f = [bssFrequencies[bssCount % len(bssFrequencies)]]
-    f.extend(meshFrequencies)
+    mpConfig = wifimac.support.Config.Node(position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(i+1), 0, 0))
+    mpConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(i+2), frequency = bssFrequencies[bssCount % len(bssFrequencies)], forwarding = False))
+    mpConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(i+2), frequency = meshFrequency, forwarding = True))
     mp = nc.createMP(idGen = idGen,
-                     position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(i+1), 0, 0),
-                     beaconDelay = 0.001*(i+2),
                      managerPool = managerPool,
-                     frequencies = f)
+                     config = mpConfig)
     mp.logger.level = commonLoggerLevel
     mp.dll.logger.level = dllLoggerLevel
     WNS.nodes.append(mp)
@@ -189,13 +194,12 @@ for i in xrange(numMPs):
 
 # Create Last AP at the end
 bssCount+=1
-f = [bssFrequencies[bssCount % len(bssFrequencies)]]
-f.extend(meshFrequencies)
+apConfig = wifimac.support.Config.Node(position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(numMPs+1), 0, 0))
+apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(numMPs+3), frequency = bssFrequencies[bssCount % len(bssFrequencies)], forwarding = False))
+apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(numMPs+3), frequency = meshFrequency, forwarding = True))
 ap = nc.createAP(idGen = idGen,
-                 position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(numMPs+1), 0, 0),
-                 beaconDelay = 0.001*(numMPs+2),
                  managerPool = managerPool,
-                 frequencies = f)
+                 config = apConfig)
 ap.logger.level = commonLoggerLevel
 ap.dll.logger.level = dllLoggerLevel
 WNS.nodes.append(ap)
@@ -207,7 +211,11 @@ print "Created AP at (", distanceBetweenMPs/2+distanceBetweenMPs*(numMPs+1), ", 
 # Create STAs in equidistance spread out over scenario
 staDist = scenarioXSize/(numSTAs-1)
 for j in xrange(numSTAs):
-    sta = nc.createSTA(idGen, wns.Position(staDist*j,verticalDistanceSTAandMP,0), managerPool, bssFrequencies)
+    staConfig = wifimac.support.Config.Station(frequency = bssFrequencies[0],
+                                               position = wns.Position(staDist*j,verticalDistanceSTAandMP,0),
+                                               scanFrequencies = bssFrequencies,
+                                               scanDuration = 0.3)
+    sta = nc.createSTA(idGen, managerPool, config = staConfig)
     sta.logger.level = commonLoggerLevel
     sta.dll.logger.level = dllLoggerLevel
     print "Created STA at (", staDist*j, ", ", verticalDistanceSTAandMP, ", 0) with id ", sta.id

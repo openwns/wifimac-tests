@@ -8,25 +8,25 @@
 #  No active probe
 # ---------------------------------------------------------------------------
 #  Common Statistics 
-#  Minimum: 167.0000000
-#  Maximum: 170.0000000
+#  Minimum: 166.5000000
+#  Maximum: 169.5000000
 #  Trials: 6
-#  Mean: 168.9166667
+#  Mean: 168.8333333
 # 
-#  Variance: 1.0416667
-#  Relative variance: 0.0000365
-#  Coefficient of variation: 0.0060422
-#  Standard deviation: 1.0206207
-#  Relative standard deviation: 0.0060422
+#  Variance: 1.3666667
+#  Relative variance: 0.0000479
+#  Coefficient of variation: 0.0069243
+#  Standard deviation: 1.1690452
+#  Relative standard deviation: 0.0069243
 # 
-#  Skewness: -0.8731070
+#  Skewness: -1.2315195
 # 
-#  2nd moment: 28533.7083333
-#  3rd moment: 4820111.2291667
+#  2nd moment: 28505.8333333
+#  3rd moment: 4813117.4583333
 # 
-#  Sum of all values: 1013.5000000
-#  (Sum of all values)^2: 171202.2500000
-#  (Sum of all values)^3: 28920667.3750000
+#  Sum of all values: 1013.0000000
+#  (Sum of all values)^2: 171035.0000000
+#  (Sum of all values)^3: 28878704.7500000
 # -----------------------------------------------------------
 # PDF statistics 
 #  Left border of x-axis: 0
@@ -40,11 +40,11 @@
 #  Overflows in percent: 0
 # -----------------------------------------------------------
 # Percentiles
-#  P01: 160.1000000
-#  P05: 160.5000000
-#  P50: 165.0000000
-#  P95: 169.5000000
-#  P99: 169.9000000
+#  P01: 160.0950000
+#  P05: 160.4750000
+#  P50: 164.7500000
+#  P95: 169.0250000
+#  P99: 169.4050000
 # -----------------------------------------------------------
 # 
 # x_n                  F(x_n)           G(x_n)     P(x_n-1 < X    n
