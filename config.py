@@ -46,7 +46,7 @@ verticalDistanceSTAandMP = 10
 
 # load
 meanPacketSize = 1480 * 8
-offeredDL = 0.5e6
+offeredDL = 1.0e6
 offeredUL = 0.25e6
 ulIsActive = True
 startDelayUL = 1.01
@@ -82,7 +82,7 @@ riseConfig.debug.main = (commonLoggerLevel > 1)
 ofdmaPhyConfig = WNS.modules.ofdmaPhy
 managerPool = wifimac.support.NodeCreator.ManagerPool(xSize = scenarioXSize,
                                                       ySize = scenarioYSize,
-                                                      maxNumRadios = 2,
+                                                      numMeshChannels = 1,
                                                       ofdmaPhyConfig = ofdmaPhyConfig)
 # End create scenario
 #####################
@@ -160,6 +160,7 @@ class MyMeshTransceiver(wifimac.support.Config.MeshTransceiver):
     def __init__(self, beaconDelay, frequency, forwarding):
         super(MyMeshTransceiver, self).__init__(frequency, forwarding)
         self.layer2.beacon.delay = beaconDelay
+        self.layer2.unicastScheduler.raStrategy = 'ConstantLow'
 
 # One AP at the beginning
 apConfig = wifimac.support.Config.Node(position = wns.Position(distanceBetweenMPs/2, 0, 0))
@@ -215,6 +216,8 @@ for j in xrange(numSTAs):
                                                position = wns.Position(staDist*j,verticalDistanceSTAandMP,0),
                                                scanFrequencies = bssFrequencies,
                                                scanDuration = 0.3)
+    staConfig.layer2.unicastScheduler.raStrategy = 'ConstantLow'
+
     sta = nc.createSTA(idGen, managerPool, config = staConfig)
     sta.logger.level = commonLoggerLevel
     sta.dll.logger.level = dllLoggerLevel
@@ -288,6 +291,6 @@ WNS.modules.constanze.probes.clear()
 
 # Now the real thing: wifimac probes
 # Deactivated probes: system-test seems not to recognize probes by probe-bus?
-##probeBusses = wifimac.ProbeBus.getProbeBusses(apIDs, mpIDs, staIDs, apAdrs, mpAdrs, staIDs, maxHopCount = numMPs+1, performanceProbes = True, networkProbes = False)
+##probeBusses = wifimac.ProbeBus.getProbeBusses(apIDs, mpIDs, staIDs, apAdrs, mpAdrs, staIDs, maxHopCount = numMPs+1, performanceProbes = True, networkProbes = True)
 ##for subtree in probeBusses.values():
-##    WNS.probeBusses.insertSubTree(subtree)
+##    WNS.probeBusRegistry.insertSubTree(subtree)

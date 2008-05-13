@@ -1,9 +1,9 @@
         WNS
        =====
                  Status: Simulation terminated successfully
-                     Start: Fri May  9 11:54:15 2008
-                       Now: Fri May  9 11:54:54 2008
-                  Duration:             0:00:39
+                     Start: Tue May 13 16:04:15 2008
+                       Now: Tue May 13 16:05:13 2008
+                  Duration:             0:00:58
 
               Simulation time: 5.5
          Max. simulation time: 5.5
@@ -12,7 +12,7 @@
 
 Debug output
 ----------------------------------------------------------
-Max number of PDUs:     53
+Max number of PDUs:     66
 Current number of PDUs: 3
 
 
@@ -20,24 +20,24 @@ The following output is read from /proc/self/status
 ----------------------------------------------------------
 Name:	wns-core
 State:	R (running)
-SleepAVG:	58%
-Tgid:	9270
-Pid:	9270
-PPid:	9269
+SleepAVG:	0%
+Tgid:	3613
+Pid:	3613
+PPid:	3612
 TracerPid:	0
 Uid:	2474	2474	2474	2474
 Gid:	1348	1348	1348	1348
 FDSize:	32
 Groups:	100 1002 1278 1332 1337 1348 7031 
-VmPeak:	   72244 kB
-VmSize:	   72244 kB
+VmPeak:	   72324 kB
+VmSize:	   72320 kB
 VmLck:	       0 kB
-VmHWM:	   38592 kB
-VmRSS:	   38592 kB
-VmData:	   23676 kB
+VmHWM:	   39244 kB
+VmRSS:	   39244 kB
+VmData:	   23604 kB
 VmStk:	      88 kB
 VmExe:	      16 kB
-VmLib:	   46368 kB
+VmLib:	   46516 kB
 VmPTE:	     124 kB
 Threads:	2
 SigQ:	0/131072
