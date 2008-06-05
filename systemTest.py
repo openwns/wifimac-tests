@@ -19,7 +19,15 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 executeable = "wns-core",
                                                 configFile = 'config.py',
                                                 runSimulations = True,
-                                                shortDescription = '2APs/2MPs network with 4 STAs',
+                                                shortDescription = '2APs/1MPs network with 3 STAs',
+                                                disabled = False,
+                                                disabledReason = ""))
+
+testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
+                                                executeable = "wns-core",
+                                                configFile = 'configOverload.py',
+                                                runSimulations = True,
+                                                shortDescription = '1AP, 1 STA, overload DL',
                                                 disabled = False,
                                                 disabledReason = ""))
 
