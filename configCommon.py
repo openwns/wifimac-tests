@@ -16,7 +16,7 @@ import wifimac.support.NodeCreator
 import wifimac.support.Config
 import wifimac.ProbeBus
 import wifimac.PathSelection
-
+import wifimac.evaluation.default
 import ofdmaphy.OFDMAPhy
 
 import rise.Scenario
@@ -253,11 +253,10 @@ for (k,v) in WNS.modules.ip.probes.items():
         continue
     speetcl.probes.ProbeModding.doIgnore(v)
 
-# Suppress all Constanze Probes
-WNS.modules.constanze.probes.clear()
-
 # Now the real thing: wifimac probes
 # Deactivated probes: system-test seems not to recognize probes by probe-bus?
-probeBusses = wifimac.ProbeBus.getProbeBusses(apIDs, mpIDs, staIDs, apAdrs, mpAdrs, staIDs, maxHopCount = numMPs+1, performanceProbes = True, networkProbes = False)
-for subtree in probeBusses.values():
-    WNS.probeBusRegistry.insertSubTree(subtree)
+wifimac.evaluation.default.installEvaluation(WNS, apIDs, mpIDs, staIDs, apAdrs, mpAdrs, staIDs, maxHopCount = numMPs+1, performanceProbes = True, networkProbes = False)
+
+#probeBusses = wifimac.ProbeBus.getProbeBusses(apIDs, mpIDs, staIDs, apAdrs, mpAdrs, staIDs, maxHopCount = numMPs+1, performanceProbes = True, networkProbes = False)
+#for subtree in probeBusses.values():
+#    WNS.probeBusRegistry.insertSubTree(subtree)
