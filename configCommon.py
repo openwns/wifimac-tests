@@ -17,11 +17,12 @@ import wifimac.support.Config
 import wifimac.ProbeBus
 import wifimac.PathSelection
 import wifimac.evaluation.default
+import wifimac.evaluation.ip
 import ofdmaphy.OFDMAPhy
 
 import rise.Scenario
 
-import speetcl.probes.AccessList
+#import speetcl.probes.AccessList
 
 from ip.VirtualARP import VirtualARPServer
 from ip.VirtualDHCP import VirtualDHCPServer
@@ -32,7 +33,7 @@ from ip.VirtualDNS import VirtualDNSServer
 WNS = wns.WNS.WNS()
 WNS.outputStrategy = wns.WNS.OutputStrategy.DELETE
 WNS.maxSimTime = simTime
-WNS.PDataBase.settlingTime = 3
+settlingTime = 3.0
 #WNS.masterLogger.backtrace.enabled = True
 #WNS.masterLogger.enabled = True
 WNS.statusWriteInterval = 120 # in seconds realTime
@@ -115,7 +116,9 @@ WNS.nodes.append(vps)
 idGen = wifimac.support.NodeCreator.idGenerator()
 
 # save IDs for probes
-apIDs = []
+apIDs = []                                   
+    
+
 mpIDs = []
 staIDs = []
 apAdrs = []
@@ -219,44 +222,22 @@ for j in xrange(numSTAs):
 
     # Add STA
     WNS.nodes.append(sta)
-    staIDs.append(id)
+    staIDs.append(sta.id)
 # End create nodes
 ##################
 
 
-########################
-# Probing the simulation
+#########
+# Probing
 
-# IP: Old-school probing, generate dict, accessList and restrict probes
-# IP-Probes are only generated for the RANG -> incomming for uplink, aggregated for downlink
-nodeAccessList = speetcl.probes.AccessList.AccessList('wns.node.Node.id')
-nodeAccessList.addRange(min=1, max=1)
-
-settings = {}
-for dist in ['hop', 'endToEnd'] :
-    settings['ip.' + dist + '.packet.incoming.delay'] = {'sorting' : nodeAccessList, 'minXValue' : 0.0, 'maxXValue' : 1.0, 'resolution' : 1000}
-    settings['ip.' + dist + '.packet.outgoing.delay'] = {'sorting' : nodeAccessList, 'minXValue' : 0.0, 'maxXValue' : 1.0, 'resolution' : 1000}
-    settings['ip.' + dist + '.packet.incoming.size'] = {'sorting' : nodeAccessList, 'minXValue' : 0.0, 'maxXValue' : 16000.0, 'resolution' : 2000}
-    settings['ip.' + dist + '.packet.outgoing.size'] = {'sorting' : nodeAccessList, 'minXValue' : 0.0, 'maxXValue' : 16000.0, 'resolution' : 2000}
-    settings['ip.' + dist + '.packet.incoming.bitThroughput'] = {'sorting' : nodeAccessList, 'minXValue' : 0.0, 'maxXValue' : 10E6, 'resolution' : 10000}
-
-    for direction in ['incoming', 'outgoing', 'aggregated'] :
-        settings['ip.' + dist + ".window." + direction + '.bitThroughput'] = {'sorting' : nodeAccessList, 'minXValue' : 0.0, 'maxXValue' : 100E6, 'resolution' : 10000}
-        settings['ip.' + dist + ".window." + direction + '.compoundThroughput'] = {'sorting' : nodeAccessList, 'minXValue' : 0.0, 'maxXValue' : 10000.0, 'resolution' : 1000}
-
-statevals = speetcl.probes.ProbeHelpers.buildSortPDFEvalFromDict(settings)
-WNS.modules.ip.probes = speetcl.probes.ProbeFactory.withSortingCriterionByDict(statevals)
-
-# suppress output of IP but throughput probes for crosscheck with WiFiMac Probes
-for (k,v) in WNS.modules.ip.probes.items():
-    if (k.find('ip.endToEnd.') >= 0):
-        continue
-    speetcl.probes.ProbeModding.doIgnore(v)
-
-# Now the real thing: wifimac probes
+# wifimac probes
 # Deactivated probes: system-test seems not to recognize probes by probe-bus?
-wifimac.evaluation.default.installEvaluation(WNS, apIDs, mpIDs, staIDs, apAdrs, mpAdrs, staIDs, maxHopCount = numMPs+1, performanceProbes = True, networkProbes = False)
+wifimac.evaluation.default.installEvaluation(WNS, settlingTime, apIDs, mpIDs, staIDs, apAdrs, mpAdrs, staIDs, maxHopCount = numMPs+1, performanceProbes = True, networkProbes = False)
 
-#probeBusses = wifimac.ProbeBus.getProbeBusses(apIDs, mpIDs, staIDs, apAdrs, mpAdrs, staIDs, maxHopCount = numMPs+1, performanceProbes = True, networkProbes = False)
-#for subtree in probeBusses.values():
-#    WNS.probeBusRegistry.insertSubTree(subtree)
+wifimac.evaluation.ip.installEvaluation(sim = WNS,
+                                        nodeIds = [rang.nodeID],
+                                        settlingTime = settlingTime,
+                                        maxPacketDelay = 0.1,     # s
+                                        maxBitThroughput = (numSTAs+1)*(offeredDL+offeredUL),  # Bit/s
+                                        resolution=100
+                                        )

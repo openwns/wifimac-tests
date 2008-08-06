@@ -20,16 +20,16 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 configFile = 'config.py',
                                                 runSimulations = True,
                                                 shortDescription = '2APs/1MPs network with 3 STAs',
-                                                disabled = True,
-                                                disabledReason = "Unfinished migration to openwns.evaluation"))
+                                                disabled = False,
+                                                disabledReason = ""))
 
 testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
                                                 executeable = "wns-core",
                                                 configFile = 'configOverload.py',
                                                 runSimulations = True,
                                                 shortDescription = '1AP, 1 STA, overload DL',
-                                                disabled = True,
-                                                disabledReason = "Unfinished migration to openwns.evaluation"))
+                                                disabled = False,
+                                                disabledReason = ""))
 
 if __name__ == '__main__':
     # This is only evaluated if the script is called by hand

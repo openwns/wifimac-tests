@@ -1,13 +1,12 @@
         WNS
        =====
                  Status: Simulation is still running
-                     Start: Thu Jun  5 10:42:21 2008
-                       Now: Thu Jun  5 10:42:21 2008
+                     Start: Wed Aug  6 19:01:57 2008
+                       Now: Wed Aug  6 19:01:57 2008
                   Duration:             0:00:00
 
               Simulation time: 0
          Max. simulation time: 5.5
-                Settling time: 3
 
 
 Debug output
@@ -20,25 +19,25 @@ The following output is read from /proc/self/status
 ----------------------------------------------------------
 Name:	wns-core
 State:	R (running)
-SleepAVG:	19%
-Tgid:	13165
-Pid:	13165
-PPid:	13164
+SleepAVG:	39%
+Tgid:	25244
+Pid:	25244
+PPid:	25220
 TracerPid:	0
 Uid:	2474	2474	2474	2474
 Gid:	1348	1348	1348	1348
 FDSize:	32
 Groups:	100 1002 1278 1332 1337 1348 7031 
-VmPeak:	   69444 kB
-VmSize:	   69444 kB
+VmPeak:	   66720 kB
+VmSize:	   66720 kB
 VmLck:	       0 kB
-VmHWM:	   31896 kB
-VmRSS:	   31896 kB
-VmData:	   20196 kB
+VmHWM:	   30020 kB
+VmRSS:	   30020 kB
+VmData:	   20132 kB
 VmStk:	      92 kB
 VmExe:	      16 kB
-VmLib:	   47020 kB
-VmPTE:	     116 kB
+VmLib:	   44200 kB
+VmPTE:	     112 kB
 Threads:	3
 SigQ:	0/131072
 SigPnd:	0000000000000000
