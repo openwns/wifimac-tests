@@ -14,15 +14,12 @@ import constanze.Node
 
 import wifimac.support.NodeCreator
 import wifimac.support.Config
-import wifimac.ProbeBus
 import wifimac.PathSelection
 import wifimac.evaluation.default
 import wifimac.evaluation.ip
 import ofdmaphy.OFDMAPhy
 
 import rise.Scenario
-
-#import speetcl.probes.AccessList
 
 from ip.VirtualARP import VirtualARPServer
 from ip.VirtualDHCP import VirtualDHCPServer
