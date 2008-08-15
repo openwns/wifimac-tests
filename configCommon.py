@@ -235,6 +235,4 @@ wifimac.evaluation.ip.installEvaluation(sim = WNS,
                                         nodeIds = [rang.nodeID],
                                         settlingTime = settlingTime,
                                         maxPacketDelay = 0.1,     # s
-                                        maxBitThroughput = (numSTAs+1)*(offeredDL+offeredUL),  # Bit/s
-                                        resolution=100
-                                        )
+                                        maxBitThroughput = (numSTAs+1)*(offeredDL+offeredUL))  # Bit/s
