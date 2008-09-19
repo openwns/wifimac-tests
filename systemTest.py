@@ -19,20 +19,19 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 executeable = "wns-core",
                                                 configFile = 'config.py',
                                                 runSimulations = True,
-                                                shortDescription = '2APs/1MPs network with 3 STAs',
-                                                requireReferenceOutput = False,
+                                                shortDescription = '1AP, 1 STA, overload DL w RTS/CTS',
+                                                requireReferenceOutput = True,
                                                 disabled = True,
-                                                disabledReason = "Pending migration to openwns.evaluation"))
+                                                disabledReason = "x"))
 
 testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
                                                 executeable = "wns-core",
-                                                configFile = 'configOverload.py',
+                                                configFile = 'configSmallMesh.py',
                                                 runSimulations = True,
-                                                shortDescription = '1AP, 1 STA, overload DL',
-                                                requireReferenceOutput = False,
-                                                disabled = True,
-                                                disabledReason = "Pending migration to openwns.evaluation"))
-
+                                                shortDescription = '2APs/1MPs network with 3 STAs',
+                                                requireReferenceOutput = True,
+                                                disabled = False,
+                                                disabledReason = ""))
 if __name__ == '__main__':
     # This is only evaluated if the script is called by hand
 

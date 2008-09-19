@@ -15,8 +15,10 @@ import constanze.Node
 import wifimac.support.NodeCreator
 import wifimac.support.Config
 import wifimac.PathSelection
+import wifimac.CapabilityInformationBase
 import wifimac.evaluation.default
 import wifimac.evaluation.ip
+
 import ofdmaphy.OFDMAPhy
 
 import rise.Scenario
@@ -81,7 +83,7 @@ nc = wifimac.support.NodeCreator.NodeCreator(propagationConfig)
 
 # one RANG
 rang = nc.createRANG()
-rang.logger.level = dllLoggerLevel
+rang.logger.level = commonLoggerLevel
 if(ulIsActive):
     # The RANG only has one IPListenerBinding that is attached
     # to the listener. The listener is the only traffic sink
@@ -106,16 +108,19 @@ WNS.nodes.append(vdns)
 
 # One virtual pathselection server
 vps = wifimac.PathSelection.VirtualPSServer("VPS", numNodes = (numSTAs + (numMPs+2)*2 + 1))
-vps.logger.level = dllLoggerLevel
+vps.logger.level = commonLoggerLevel
 WNS.nodes.append(vps)
+
+# One virtual capability information base server
+vcibs = wifimac.CapabilityInformationBase.VirtualCababilityInformationService("VCIB")
+vcibs.logger.level = commonLoggerLevel
+WNS.nodes.append(vcibs)
 
 # Single instance of id-generator for all nodes with ids
 idGen = wifimac.support.NodeCreator.idGenerator()
 
 # save IDs for probes
-apIDs = []                                   
-    
-
+apIDs = []
 mpIDs = []
 staIDs = []
 apAdrs = []
@@ -165,7 +170,7 @@ if(numAPs > 1):
                      managerPool = managerPool,
                      config = apConfig)
     ap.logger.level = commonLoggerLevel
-    ap.dll.logger.level = 2#dllLoggerLevel
+    ap.dll.logger.level = dllLoggerLevel
     WNS.nodes.append(ap)
     apIDs.append(ap.id)
     apAdrs.extend(ap.dll.addresses)

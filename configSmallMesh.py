@@ -10,31 +10,34 @@ import wifimac.support.Config
 # on a string, on each end of the string, an AP is positioned
 # Traffic is either DL only or bidirectional
 #
-simTime = 5.5
+simTime = 3.5
+settlingTime = 2.0
 commonLoggerLevel = 1
 dllLoggerLevel = 2
 
 # length of the string
-numMPs = 0
-numSTAs = 1
-numAPs = 1
+numMPs = 1
+numSTAs = 3
+numAPs = 2
 distanceBetweenMPs = 50
-verticalDistanceSTAandMP = 10
+verticalDistanceSTAandMP = 50
 
 # load
 meanPacketSize = 1480 * 8
-offeredDL = 6.0e6
+offeredDL = 1.0e6
 offeredUL = 1.0e6
-ulIsActive = False
+ulIsActive = True
 dlIsActive = True
 startDelayUL = 1.01
 startDelayDL = 1.02
 
 # Available frequencies for bss and backbone, in MHz
 meshFrequency = 5500
-bssFrequencies = [2400, 2440, 2480]
+bssFrequencies = [2400, 2440] #,2480]
 # End simulation parameters
 ###########################
+
+rtscts = True
 
 ####################
 # Node configuration
@@ -45,16 +48,40 @@ class MyMeshTransceiver(wifimac.support.Config.MeshTransceiver):
         super(MyMeshTransceiver, self).__init__(frequency, forwarding = True)
         # changes to the default config
         self.layer2.beacon.delay = beaconDelay
-        self.layer2.ra.raStrategy = 'SINR'
-        self.layer2.rtsctsThreshold = 800*8
+        self.layer2.mode = 'DraftN'
+        self.layer2.ra.raStrategy = 'SINRwithMIMO'
+        self.layer2.txop.txopLimit = 0.0
+        self.layer2.rtscts.rtsctsOnTxopData = True
+        self.layer2.aggregation.maxEntries = 10
+        self.layer2.blockACK.maxOnAir = 10
+        self.layer2.bufferSize = 50
+        self.layer2.bufferSizeUnit = 'PDU'
+        self.layer2.manager.numAntennas = 3
+
+        if(rtscts):
+            self.layer2.rtsctsThreshold = meanPacketSize/2
+        else:
+            self.layer2.rtsctsThreshold = meanPacketSize*self.layer2.aggregation.maxEntries*2
 
 # configuration class for AP and MP BSS transceivers, without RTS/CTS
 class MyBSSTransceiver(wifimac.support.Config.MeshTransceiver):
     def __init__(self, beaconDelay, frequency):
         super(MyBSSTransceiver, self).__init__(frequency, forwarding = False)
         self.layer2.beacon.delay = beaconDelay
-        self.layer2.ra.raStrategy = 'ConstantLow'
-        self.layer2.rtsctsThreshold = 1e6*8
+        self.layer2.mode = 'DraftN'
+        self.layer2.ra.raStrategy = 'SINR'
+        self.layer2.txop.txopLimit = 0.0
+        self.layer2.rtscts.rtsctsOnTxopData = True
+        self.layer2.aggregation.maxEntries = 10
+        self.layer2.blockACK.maxOnAir = 10
+        self.layer2.bufferSize = 50
+        self.layer2.bufferSizeUnit = 'PDU'
+        self.layer2.manager.numAntennas = 1
+
+        if(rtscts):
+            self.layer2.rtsctsThreshold = meanPacketSize/2
+        else:
+            self.layer2.rtsctsThreshold = meanPacketSize*self.layer2.aggregation.maxEntries*2
 
 # configuration class for STAs
 class MySTAConfig(wifimac.support.Config.Station):
@@ -63,9 +90,13 @@ class MySTAConfig(wifimac.support.Config.Station):
                                           position = position,
                                           scanFrequencies = scanFrequencies,
                                           scanDuration = scanDurationPerFrequency)
-        self.layer2.ra.raStrategy = 'ConstantLow'
-        self.layer2.rtsctsThreshold = 1e6*8
+        self.layer2.mode = 'DraftN'
+        self.layer2.ra.raStrategy = 'SINR'
 
+        if(rtscts):
+            self.layer2.rtsctsThreshold = meanPacketSize/2
+        else:
+            self.layer2.rtsctsThreshold = meanPacketSize*self.layer2.aggregation.maxEntries*2
 # End node configuration
 ########################
 

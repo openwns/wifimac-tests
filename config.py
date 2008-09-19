@@ -11,21 +11,22 @@ import wifimac.support.Config
 # Traffic is either DL only or bidirectional
 #
 simTime = 5.5
+settlingTime = 2.0
 commonLoggerLevel = 1
 dllLoggerLevel = 2
 
 # length of the string
-numMPs = 1
-numSTAs = 3
-numAPs = 2
+numMPs = 0
+numSTAs = 1
+numAPs = 1
 distanceBetweenMPs = 50
 verticalDistanceSTAandMP = 10
 
 # load
 meanPacketSize = 1480 * 8
-offeredDL = 1.0e6
-offeredUL = 1.0e6
-ulIsActive = True
+offeredDL = 6.0e6
+offeredUL = 0.0e6
+ulIsActive = False
 dlIsActive = True
 startDelayUL = 1.01
 startDelayDL = 1.02
@@ -39,22 +40,21 @@ bssFrequencies = [2400, 2440, 2480]
 ####################
 # Node configuration
 
-# configuration class for AP and MP mesh transceivers, with RTS/CTS
+# configuration class for AP and MP mesh transceivers
 class MyMeshTransceiver(wifimac.support.Config.MeshTransceiver):
     def __init__(self, beaconDelay, frequency):
         super(MyMeshTransceiver, self).__init__(frequency, forwarding = True)
         # changes to the default config
         self.layer2.beacon.delay = beaconDelay
-        self.layer2.ra.raStrategy = 'SINR'
-        self.layer2.rtsctsThreshold = 800*8
 
-# configuration class for AP and MP BSS transceivers, without RTS/CTS
+# configuration class for AP and MP BSS transceivers
 class MyBSSTransceiver(wifimac.support.Config.MeshTransceiver):
     def __init__(self, beaconDelay, frequency):
         super(MyBSSTransceiver, self).__init__(frequency, forwarding = False)
         self.layer2.beacon.delay = beaconDelay
-        self.layer2.ra.raStrategy = 'SINR'
-        self.layer2.rtsctsThreshold = 1e6*8
+        self.layer2.mode = 'basic'
+        self.layer2.ra.raStrategy = 'ConstantLow'
+        self.layer2.rtsctsThreshold = 800#1e6*8
 
 # configuration class for STAs
 class MySTAConfig(wifimac.support.Config.Station):
@@ -63,8 +63,10 @@ class MySTAConfig(wifimac.support.Config.Station):
                                           position = position,
                                           scanFrequencies = scanFrequencies,
                                           scanDuration = scanDurationPerFrequency)
-        self.layer2.ra.raStrategy = 'SINR'
-        self.layer2.rtsctsThreshold = 1e6*8
+        self.layer2.mode = 'basic'
+        self.layer2.ra.raStrategy = 'ConstantLow'
+        self.layer2.rtsctsThreshold = 800#1e6*8
+        self.layer2.mode = 'basic'
 
 # End node configuration
 ########################
