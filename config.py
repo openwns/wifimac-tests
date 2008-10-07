@@ -13,7 +13,7 @@ import wifimac.support.Config
 simTime = 5.5
 settlingTime = 2.0
 commonLoggerLevel = 1
-dllLoggerLevel = 2
+dllLoggerLevel = 1
 
 # length of the string
 numMPs = 0

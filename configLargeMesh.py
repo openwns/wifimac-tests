@@ -29,8 +29,8 @@ from ip.VirtualDNS import VirtualDNSServer
 # Simulation parameters
 #from SimConfig import params
 
-simTime = 5.0
-settlingTime = min(simTime/3.0+1.0, simTime-2.0)
+simTime = 25.5
+settlingTime = 5.0#min(simTime/3.0+1.0, simTime-2.0)
 commonLoggerLevel = 1
 dllLoggerLevel = 2
 
@@ -38,12 +38,12 @@ dllLoggerLevel = 2
 MPsPerAP = 0.0#params.mpsPerAP
 
 scenarioNumber = 1#params.scenarioNumber
-reducedSize = 1000#params.scenarioSize
+reducedSize = 300#params.scenarioSize
 
 # load
 meanPacketSize = 1480*8#params.packetSize
-numSTAs = 64#params.numberOfSTAs
-offered = 500000#params.offeredTraffic
+numSTAs = 16#params.numberOfSTAs
+offered = 250000#params.offeredTraffic
 ratioUL = 0.1#params.ratioUL
 startDelay = 1.0
 
@@ -369,10 +369,11 @@ wifimac.evaluation.default.installEvaluation(WNS, settlingTime,
                                              apAdrs, mpAdrs, staIDs,
                                              maxHopCount = int(maxPathLength[1:][len(apIDs)-1])+1,
                                              performanceProbes = True,
-                                             networkProbes = True)
+                                             networkProbes = False)
 
 wifimac.evaluation.ip.installEvaluation(sim = WNS,
-                                        nodeIds = [rang.nodeID],
+                                        staIds = staIDs,
+                                        rangId = rang.nodeID,
                                         settlingTime = settlingTime,
                                         maxPacketDelay = 0.1,     # s
                                         maxBitThroughput = (numSTAs+1)*(offered))  # Bit/s

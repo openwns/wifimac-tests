@@ -234,10 +234,16 @@ for j in xrange(numSTAs):
 
 # wifimac probes
 # Deactivated probes: system-test seems not to recognize probes by probe-bus?
-wifimac.evaluation.default.installEvaluation(WNS, settlingTime, apIDs, mpIDs, staIDs, apAdrs, mpAdrs, staIDs, maxHopCount = numMPs+1, performanceProbes = True, networkProbes = False)
+wifimac.evaluation.default.installEvaluation(WNS,
+                                             settlingTime,
+                                             apIDs, mpIDs, staIDs,
+                                             apAdrs, mpAdrs, staIDs,
+                                             maxHopCount = numMPs+1,
+                                             performanceProbes = True, networkProbes = False)
 
 wifimac.evaluation.ip.installEvaluation(sim = WNS,
-                                        nodeIds = [rang.nodeID],
+                                        staIds = staIDs,
+                                        rangId = rang.nodeID,
                                         settlingTime = settlingTime,
                                         maxPacketDelay = 0.1,     # s
                                         maxBitThroughput = (numSTAs+1)*(offeredDL+offeredUL))  # Bit/s
