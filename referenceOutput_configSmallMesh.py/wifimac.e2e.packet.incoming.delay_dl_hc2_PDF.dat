@@ -8,14 +8,14 @@
 #  Evaluation terminated successfully!
 # ---------------------------------------------------------------------------
 #  Common Statistics 
-#  Minimum: 0.0006200
-#  Maximum: 0.0008020
+#  Minimum: 0.0006520
+#  Maximum: 0.0007210
 #  Trials: 42
-#  Mean: 0.0006373
+#  Mean: 0.0006536
 # 
 #  Variance: 0.0000000
-#  Relative variance: 0.0022818
-#  Coefficient of variation: 0.0477685
+#  Relative variance: 0.0002656
+#  Coefficient of variation: 0.0162982
 #  Standard deviation: 0.0000000
 #  Relative standard deviation: 0.0000000
 # 
@@ -24,8 +24,8 @@
 #  2nd moment: 0.0000004
 #  3rd moment: 0.0000000
 # 
-#  Sum of all values: 0.0267660
-#  (Sum of all values)^2: 0.0000171
+#  Sum of all values: 0.0274530
+#  (Sum of all values)^2: 0.0000179
 #  (Sum of all values)^3: 0.0000000
 # -----------------------------------------------------------
 # PDF statistics 
@@ -40,11 +40,11 @@
 #  Overflows in percent: 0
 # -----------------------------------------------------------
 # Percentiles
-#  P01: 0.0000080
-#  P05: 0.0000401
-#  P50: 0.0004010
-#  P95: 0.0007619
-#  P99: 0.0007940
+#  P01: 0.0000072
+#  P05: 0.0000361
+#  P50: 0.0003605
+#  P95: 0.0006850
+#  P99: 0.0007138
 # -----------------------------------------------------------
 # 
 # x_n                  F(x_n)           G(x_n)     P(x_n-1 < X    n
