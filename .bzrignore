@@ -5,3 +5,4 @@ stderr.log
 stdout.log
 *.junk
 output
+*.csv
