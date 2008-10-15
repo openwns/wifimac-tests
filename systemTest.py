@@ -47,7 +47,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 runSimulations = True,
                                                 shortDescription = '1AP, 1 STA, overload DL w RTS/CTS',
                                                 requireReferenceOutput = True,
-                                                disabled = False,
+                                                disabled = True,
                                                 disabledReason = ""))
 
 testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
