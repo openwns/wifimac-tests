@@ -40,8 +40,8 @@ import constanze.Node
 
 import wifimac.support.NodeCreator
 import wifimac.support.Config
-import wifimac.PathSelection
-import wifimac.CapabilityInformationBase
+import wifimac.pathselection
+import wifimac.management.InformationBases
 import wifimac.evaluation.default
 import wifimac.evaluation.ip
 
@@ -133,12 +133,12 @@ vdns.logger.level = commonLoggerLevel
 WNS.nodes.append(vdns)
 
 # One virtual pathselection server
-vps = wifimac.PathSelection.VirtualPSServer("VPS", numNodes = (numSTAs + (numMPs+2)*2 + 1))
+vps = wifimac.pathselection.VirtualPSServer("VPS", numNodes = (numSTAs + (numMPs+2)*2 + 1))
 vps.logger.level = commonLoggerLevel
 WNS.nodes.append(vps)
 
 # One virtual capability information base server
-vcibs = wifimac.CapabilityInformationBase.VirtualCababilityInformationService("VCIB")
+vcibs = wifimac.management.InformationBases.VirtualCababilityInformationService("VCIB")
 vcibs.logger.level = commonLoggerLevel
 WNS.nodes.append(vcibs)
 
