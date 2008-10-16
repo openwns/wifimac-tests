@@ -26,8 +26,7 @@
 ###############################################################################
 import wns
 
-import wifimac.support.NodeCreator
-import wifimac.support.Config
+import wifimac.support.Transceiver
 
 #######################
 # Simulation parameters
@@ -69,7 +68,7 @@ rtscts = True
 # Node configuration
 
 # configuration class for AP and MP mesh transceivers, with RTS/CTS
-class MyMeshTransceiver(wifimac.support.Config.MeshTransceiver):
+class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
     def __init__(self, beaconDelay, frequency):
         super(MyMeshTransceiver, self).__init__(frequency, forwarding = True)
         # changes to the default config
@@ -90,7 +89,7 @@ class MyMeshTransceiver(wifimac.support.Config.MeshTransceiver):
             self.layer2.rtsctsThreshold = meanPacketSize*self.layer2.aggregation.maxEntries*2
 
 # configuration class for AP and MP BSS transceivers, without RTS/CTS
-class MyBSSTransceiver(wifimac.support.Config.MeshTransceiver):
+class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
     def __init__(self, beaconDelay, frequency):
         super(MyBSSTransceiver, self).__init__(frequency, forwarding = False)
         self.layer2.beacon.delay = beaconDelay
@@ -110,7 +109,7 @@ class MyBSSTransceiver(wifimac.support.Config.MeshTransceiver):
             self.layer2.rtsctsThreshold = meanPacketSize*self.layer2.aggregation.maxEntries*2
 
 # configuration class for STAs
-class MySTAConfig(wifimac.support.Config.Station):
+class MySTAConfig(wifimac.support.Transceiver.Station):
     def __init__(self, initFrequency, position, scanFrequencies, scanDurationPerFrequency):
         super(MySTAConfig, self).__init__(frequency = initFrequency,
                                           position = position,

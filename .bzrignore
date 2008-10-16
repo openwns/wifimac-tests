@@ -5,3 +5,5 @@ stderr.log
 stdout.log
 *.junk
 output
+testResults_config.py.csv
+testResults_configSmallMesh.py.csv

@@ -29,7 +29,6 @@ random.seed(22)
 
 import dll
 
-import wns
 import wns.WNS
 import wns.Logger
 from wns import dB, dBm, fromdB, fromdBm
@@ -38,8 +37,7 @@ from wns.Interval import Interval
 import constanze.Constanze
 import constanze.Node
 
-import wifimac.support.NodeCreator
-import wifimac.support.Config
+import wifimac.support
 import wifimac.pathselection
 import wifimac.management.InformationBases
 import wifimac.evaluation.default
@@ -49,9 +47,9 @@ import ofdmaphy.OFDMAPhy
 
 import rise.Scenario
 
-from ip.VirtualARP import VirtualARPServer
-from ip.VirtualDHCP import VirtualDHCPServer
-from ip.VirtualDNS import VirtualDNSServer
+import ip.VirtualARP
+#import ip.VirtualDHCP
+import ip.VirtualDNS
 
 # create an instance of the WNS configuration
 # The variable must be called WNS!!!!
@@ -75,10 +73,10 @@ riseConfig.debug.receiver    = (commonLoggerLevel > 1)
 riseConfig.debug.main = (commonLoggerLevel > 1)
 
 ofdmaPhyConfig = WNS.modules.ofdmaPhy
-managerPool = wifimac.support.NodeCreator.ManagerPool(xSize = scenarioXSize,
-                                                      ySize = scenarioYSize,
-                                                      numMeshChannels = 1,
-                                                      ofdmaPhyConfig = ofdmaPhyConfig)
+managerPool = wifimac.support.ChannelManagerPool(xSize = scenarioXSize,
+                                                 ySize = scenarioYSize,
+                                                 numMeshChannels = 1,
+                                                 ofdmaPhyConfig = ofdmaPhyConfig)
 # End create scenario
 #####################
 
@@ -105,7 +103,7 @@ propagationConfig = rise.scenario.Propagation.Configuration(pathloss = myPathlos
 
 ###################################
 #Create nodes using the NodeCreator
-nc = wifimac.support.NodeCreator.NodeCreator(propagationConfig)
+nc = wifimac.support.NodeCreator(propagationConfig)
 
 # one RANG
 rang = nc.createRANG()
@@ -123,12 +121,12 @@ WNS.nodes.append(rang)
 
 # create (magic) service nodes
 # One virtual ARP Zone
-varp = VirtualARPServer("VARP", "theOnlyZone")
+varp = ip.VirtualARP.VirtualARPServer("VARP", "theOnlyZone")
 varp.logger.level = commonLoggerLevel
 WNS.nodes.append(varp)
 
 # One virtual DNS server
-vdns = VirtualDNSServer("VDNS", "ip.DEFAULT.GLOBAL")
+vdns = ip.VirtualDNS.VirtualDNSServer("VDNS", "ip.DEFAULT.GLOBAL")
 vdns.logger.level = commonLoggerLevel
 WNS.nodes.append(vdns)
 
@@ -143,7 +141,7 @@ vcibs.logger.level = commonLoggerLevel
 WNS.nodes.append(vcibs)
 
 # Single instance of id-generator for all nodes with ids
-idGen = wifimac.support.NodeCreator.idGenerator()
+idGen = wifimac.support.idGenerator()
 
 # save IDs for probes
 apIDs = []
@@ -156,7 +154,7 @@ mpAdrs = []
 bssCount = 0
 
 # One AP at the beginning
-apConfig = wifimac.support.Config.Node(position = wns.Position(distanceBetweenMPs/2, 0, 0))
+apConfig = wifimac.support.Node(position = wns.Position(distanceBetweenMPs/2, 0, 0))
 apConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001, frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
 apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001, frequency = meshFrequency))
 ap = nc.createAP(idGen = idGen,
@@ -173,7 +171,7 @@ print "Created AP at (", distanceBetweenMPs/2, ", 0, 0) with id ", ap.id, " and 
 # Create MPs
 for i in xrange(numMPs):
     bssCount+=1
-    mpConfig = wifimac.support.Config.Node(position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(i+1), 0, 0))
+    mpConfig = wifimac.support.Node(position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(i+1), 0, 0))
     mpConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001*(i+2), frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
     mpConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(i+2), frequency = meshFrequency))
     mp = nc.createMP(idGen = idGen,
@@ -189,7 +187,7 @@ for i in xrange(numMPs):
 # Create Last AP at the end
 if(numAPs > 1):
     bssCount+=1
-    apConfig = wifimac.support.Config.Node(position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(numMPs+1), 0, 0))
+    apConfig = wifimac.support.Node(position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(numMPs+1), 0, 0))
     apConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001*(numMPs+3), frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
     apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(numMPs+3), frequency = meshFrequency))
     ap = nc.createAP(idGen = idGen,
