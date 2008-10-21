@@ -66,6 +66,7 @@ WNS.probesWriteInterval = 3600 # in seconds realTime
 # Create scenario
 scenarioXSize = distanceBetweenMPs*(numMPs + 2)
 scenarioYSize = verticalDistanceSTAandMP
+scenario = rise.Scenario.Scenario(scenarioXSize, scenarioYSize)
 
 riseConfig = WNS.modules.rise
 riseConfig.debug.transmitter = (commonLoggerLevel > 1)
@@ -73,8 +74,7 @@ riseConfig.debug.receiver    = (commonLoggerLevel > 1)
 riseConfig.debug.main = (commonLoggerLevel > 1)
 
 ofdmaPhyConfig = WNS.modules.ofdmaPhy
-managerPool = wifimac.support.ChannelManagerPool(xSize = scenarioXSize,
-                                                 ySize = scenarioYSize,
+managerPool = wifimac.support.ChannelManagerPool(scenario = scenario,
                                                  numMeshChannels = 1,
                                                  ofdmaPhyConfig = ofdmaPhyConfig)
 # End create scenario
