@@ -58,6 +58,65 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 requireReferenceOutput = True,
                                                 disabled = False,
                                                 disabledReason = ""))
+
+testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
+                                                executeable = "wns-core",
+                                                configFile = 'config.py',
+                                                runSimulations = True,
+                                                shortDescription = 'WiFiMAC-Tutorial: Experiment 1',
+                                                requireReferenceOutput = True,
+                                                disabled = False,
+                                                disabledReason = "",
+                                                workingDir = "PyConfig/experiment1"))
+testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
+                                                executeable = "wns-core",
+                                                configFile = 'config.py',
+                                                runSimulations = True,
+                                                shortDescription = 'WiFiMAC-Tutorial: Experiment 3',
+                                                requireReferenceOutput = True,
+                                                disabled = False,
+                                                disabledReason = "",
+                                                workingDir = "PyConfig/experiment3"))
+
+testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
+                                                executeable = "wns-core",
+                                                configFile = 'config.py',
+                                                runSimulations = True,
+                                                shortDescription = 'WiFiMAC-Tutorial: Experiment 4',
+                                                requireReferenceOutput = True,
+                                                disabled = False,
+                                                disabledReason = "",
+                                                workingDir = "PyConfig/experiment4"))
+
+testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
+                                                executeable = "wns-core",
+                                                configFile = 'config.py',
+                                                runSimulations = True,
+                                                shortDescription = 'WiFiMAC-Tutorial: Experiment 5',
+                                                requireReferenceOutput = True,
+                                                disabled = False,
+                                                disabledReason = "",
+                                                workingDir = "PyConfig/experiment5"))
+
+testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
+                                                executeable = "wns-core",
+                                                configFile = 'config.py',
+                                                runSimulations = True,
+                                                shortDescription = 'WiFiMAC-Tutorial: Experiment 6',
+                                                requireReferenceOutput = True,
+                                                disabled = False,
+                                                disabledReason = "",
+                                                workingDir = "PyConfig/experiment6"))
+
+testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
+                                                executeable = "wns-core",
+                                                configFile = 'config.py',
+                                                runSimulations = True,
+                                                shortDescription = 'WiFiMAC-Tutorial: Experiment 7',
+                                                requireReferenceOutput = True,
+                                                disabled = False,
+                                                disabledReason = "",
+                                                workingDir = "PyConfig/experiment7"))
 if __name__ == '__main__':
     # This is only evaluated if the script is called by hand
 

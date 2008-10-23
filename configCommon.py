@@ -56,21 +56,18 @@ import ip.VirtualDNS
 WNS = wns.WNS.WNS()
 WNS.outputStrategy = wns.WNS.OutputStrategy.DELETE
 WNS.maxSimTime = simTime
-settlingTime = 3.0
-#WNS.masterLogger.backtrace.enabled = True
-#WNS.masterLogger.enabled = True
 WNS.statusWriteInterval = 120 # in seconds realTime
 WNS.probesWriteInterval = 3600 # in seconds realTime
 
 #################
 # Create scenario
-scenarioXSize = distanceBetweenMPs*(numMPs + 2)
-scenarioYSize = verticalDistanceSTAandMP
-scenario = rise.Scenario.Scenario(scenarioXSize, scenarioYSize)
+sizeX = distanceBetweenMPs*(numMPs + 2)
+sizeY = verticalDistanceSTAandMP
+scenario = rise.Scenario.Scenario(sizeX, sizeY)
 
 riseConfig = WNS.modules.rise
 riseConfig.debug.transmitter = (commonLoggerLevel > 1)
-riseConfig.debug.receiver    = (commonLoggerLevel > 1)
+riseConfig.debug.receiver = (commonLoggerLevel > 1)
 riseConfig.debug.main = (commonLoggerLevel > 1)
 
 ofdmaPhyConfig = WNS.modules.ofdmaPhy
@@ -82,22 +79,25 @@ managerPool = wifimac.support.ChannelManagerPool(scenario = scenario,
 
 ######################################
 # Radio channel propagation parameters
-myPathloss = rise.scenario.Pathloss.PyFunction(validFrequencies = Interval(2000, 6000),
-                                               validDistances = Interval(2, 5000), # [m]
-                                               offset = dB(-27.552219),
-                                               freqFactor = 20,
-                                               distFactor = 35,
-                                               distanceUnit = "m", # nur fuer die Formel, nicht fuer validDistances
-                                               minPathloss = dB(42), # pathloss at 2m distance
-                                               outOfMinRange = rise.scenario.Pathloss.Constant("42 dB"), #Pathloss.FreeSpace(),
-                                               outOfMaxRange = rise.scenario.Pathloss.Deny(),
-                                               scenarioWrap = False,
-                                               sizeX = scenarioXSize,
-                                               sizeY = scenarioYSize)
-#myShadowing = rise.scenario.Shadowing.SpatialCorrelated(shadowSigma=5, correlationDistance=50)
+myPathloss = rise.scenario.Pathloss.PyFunction(
+    validFrequencies = Interval(2000, 6000),
+    validDistances = Interval(2, 5000), #[m]
+    offset = dB(-27.552219),
+    freqFactor = 20,
+    distFactor = 35,
+    distanceUnit = "m", # only for the formula, not for validDistances
+    minPathloss = dB(42), # pathloss at 2m distance
+    outOfMinRange = rise.scenario.Pathloss.Constant("42 dB"),
+    outOfMaxRange = rise.scenario.Pathloss.Deny(),
+    scenarioWrap = False,
+    sizeX = sizeX,
+    sizeY = sizeY)
 myShadowing = rise.scenario.Shadowing.No()
 myFastFading = rise.scenario.FastFading.No()
-propagationConfig = rise.scenario.Propagation.Configuration(pathloss = myPathloss, shadowing = myShadowing, fastFading = myFastFading)
+propagationConfig = rise.scenario.Propagation.Configuration(
+    pathloss = myPathloss,
+    shadowing = myShadowing,
+    fastFading = myFastFading)
 # End radio channel propagation parameters
 ##########################################
 
@@ -112,8 +112,10 @@ if(ulIsActive):
     # The RANG only has one IPListenerBinding that is attached
     # to the listener. The listener is the only traffic sink
     # within the RANG
-    ipListenerBinding = constanze.Node.IPListenerBinding(rang.nl.domainName, parentLogger=rang.logger)
-    listener = constanze.Node.Listener(rang.nl.domainName + ".listener", probeWindow = 0.1, parentLogger=rang.logger)
+    ipListenerBinding = constanze.Node.IPListenerBinding(
+        rang.nl.domainName, parentLogger=rang.logger)
+    listener = constanze.Node.Listener(
+        rang.nl.domainName + ".listener", probeWindow = 0.1, parentLogger=rang.logger)
     rang.load.addListener(ipListenerBinding, listener)
     rang.nl.windowedEndToEndProbe.config.windowSize = 2.0
     rang.nl.windowedEndToEndProbe.config.sampleInterval = 0.5
@@ -203,7 +205,7 @@ if(numAPs > 1):
 
 # Create STAs in equidistance spread out over scenario
 if(numSTAs > 1):
-    staDist = scenarioXSize/(numSTAs-1)
+    staDist = sizeX/(numSTAs-1)
 else:
     staDist = 1
 

@@ -70,7 +70,7 @@ rtscts = True
 # configuration class for AP and MP mesh transceivers, with RTS/CTS
 class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
     def __init__(self, beaconDelay, frequency):
-        super(MyMeshTransceiver, self).__init__(frequency, forwarding = True)
+        super(MyMeshTransceiver, self).__init__(frequency)
         # changes to the default config
         self.layer2.beacon.delay = beaconDelay
         self.layer2.mode = 'DraftN'
@@ -91,7 +91,7 @@ class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
 # configuration class for AP and MP BSS transceivers, without RTS/CTS
 class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
     def __init__(self, beaconDelay, frequency):
-        super(MyBSSTransceiver, self).__init__(frequency, forwarding = False)
+        super(MyBSSTransceiver, self).__init__(frequency)
         self.layer2.beacon.delay = beaconDelay
         self.layer2.mode = 'DraftN'
         self.layer2.ra.raStrategy = 'SINR'
