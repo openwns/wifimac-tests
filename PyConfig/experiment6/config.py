@@ -78,7 +78,7 @@ bssFrequencies = [2400, 2440, 2480]
 ###########################
 # end example
 
-# begin example "wifimac.tutorial.experiment6.nodeConfig.AP"
+# begin example "wifimac.tutorial.experiment6.config.nodeConfig.AP"
 ####################
 # Node configuration
 
@@ -97,7 +97,7 @@ class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
         self.layer2.rtsctsThreshold = 8e6
 # end example
 
-# begin example "wifimac.tutorial.experiment6.nodeConfig.Mesh"
+# begin example "wifimac.tutorial.experiment6.config.nodeConfig.Mesh"
 class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
     def __init__(self, beaconDelay):
         super(MyMeshTransceiver, self).__init__(frequency = meshFrequency)
@@ -112,7 +112,7 @@ class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
         self.layer2.rtsctsThreshold = 8e6
 # end example
 
-# begin example "wifimac.tutorial.experiment6.nodeConfig.STA"
+# begin example "wifimac.tutorial.experiment6.config.nodeConfig.STA"
 # configuration class for STAs
 class MySTATransceiver(wifimac.support.Transceiver.Station):
     def __init__(self, position, scanFrequencies):
