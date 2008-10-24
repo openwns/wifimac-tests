@@ -36,7 +36,7 @@ import wifimac.support.Transceiver
 # Traffic is either DL only or bidirectional
 #
 simTime = 5.5
-settlingTime = 2.0
+settlingTime = 3.0
 commonLoggerLevel = 1
 dllLoggerLevel = 2
 
