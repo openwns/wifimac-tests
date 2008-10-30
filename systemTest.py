@@ -16,7 +16,7 @@ testSuite = pywns.WNSUnit.TestSuite()
 
 # create a system test
 testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
-                                                executeable = "wns-core",
+                                                
                                                 configFile = 'config.py',
                                                 runSimulations = True,
                                                 shortDescription = '1AP, 1 STA, overload DL w RTS/CTS',
@@ -25,7 +25,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 disabledReason = ""))
 
 testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
-                                                executeable = "wns-core",
+                                                
                                                 configFile = 'configSmallMesh.py',
                                                 runSimulations = True,
                                                 shortDescription = '2APs/1MPs network with 3 STAs',
