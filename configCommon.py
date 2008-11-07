@@ -1,9 +1,34 @@
+###############################################################################
+# This file is part of openWNS (open Wireless Network Simulator)
+# _____________________________________________________________________________
+#
+# Copyright (C) 2004-2008
+# Chair of Communication Networks (ComNets)
+# Kopernikusstr. 16, D-52074 Aachen, Germany
+# phone: ++49-241-80-27910,
+# fax: ++49-241-80-22242
+# email: info@openwns.org
+# www: http://www.openwns.org
+# _____________________________________________________________________________
+#
+# openWNS is free software; you can redistribute it and/or modify it under the
+# terms of the GNU Lesser General Public License version 2 as published by the
+# Free Software Foundation;
+#
+# openWNS is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+###############################################################################
 import random
 random.seed(22)
 
 import dll
 
-import wns
 import wns.WNS
 import wns.Logger
 from wns import dB, dBm, fromdB, fromdBm
@@ -12,10 +37,9 @@ from wns.Interval import Interval
 import constanze.Constanze
 import constanze.Node
 
-import wifimac.support.NodeCreator
-import wifimac.support.Config
-import wifimac.PathSelection
-import wifimac.CapabilityInformationBase
+import wifimac.support
+import wifimac.pathselection
+import wifimac.management.InformationBases
 import wifimac.evaluation.default
 import wifimac.evaluation.ip
 
@@ -23,63 +47,63 @@ import ofdmaphy.OFDMAPhy
 
 import rise.Scenario
 
-from ip.VirtualARP import VirtualARPServer
-from ip.VirtualDHCP import VirtualDHCPServer
-from ip.VirtualDNS import VirtualDNSServer
+import ip.VirtualARP
+#import ip.VirtualDHCP
+import ip.VirtualDNS
 
 # create an instance of the WNS configuration
 # The variable must be called WNS!!!!
 WNS = wns.WNS.WNS()
 WNS.outputStrategy = wns.WNS.OutputStrategy.DELETE
 WNS.maxSimTime = simTime
-settlingTime = 3.0
-#WNS.masterLogger.backtrace.enabled = True
-#WNS.masterLogger.enabled = True
 WNS.statusWriteInterval = 120 # in seconds realTime
 WNS.probesWriteInterval = 3600 # in seconds realTime
 
 #################
 # Create scenario
-scenarioXSize = distanceBetweenMPs*(numMPs + 2)
-scenarioYSize = verticalDistanceSTAandMP
+sizeX = distanceBetweenMPs*(numMPs + 2)
+sizeY = verticalDistanceSTAandMP
+scenario = rise.Scenario.Scenario(sizeX, sizeY)
 
 riseConfig = WNS.modules.rise
 riseConfig.debug.transmitter = (commonLoggerLevel > 1)
-riseConfig.debug.receiver    = (commonLoggerLevel > 1)
+riseConfig.debug.receiver = (commonLoggerLevel > 1)
 riseConfig.debug.main = (commonLoggerLevel > 1)
 
 ofdmaPhyConfig = WNS.modules.ofdmaPhy
-managerPool = wifimac.support.NodeCreator.ManagerPool(xSize = scenarioXSize,
-                                                      ySize = scenarioYSize,
-                                                      numMeshChannels = 1,
-                                                      ofdmaPhyConfig = ofdmaPhyConfig)
+managerPool = wifimac.support.ChannelManagerPool(scenario = scenario,
+                                                 numMeshChannels = 1,
+                                                 ofdmaPhyConfig = ofdmaPhyConfig)
 # End create scenario
 #####################
 
 ######################################
 # Radio channel propagation parameters
-myPathloss = rise.scenario.Pathloss.PyFunction(validFrequencies = Interval(2000, 6000),
-                                               validDistances = Interval(2, 5000), # [m]
-                                               offset = dB(-27.552219),
-                                               freqFactor = 20,
-                                               distFactor = 35,
-                                               distanceUnit = "m", # nur fuer die Formel, nicht fuer validDistances
-                                               minPathloss = dB(42), # pathloss at 2m distance
-                                               outOfMinRange = rise.scenario.Pathloss.Constant("42 dB"), #Pathloss.FreeSpace(),
-                                               outOfMaxRange = rise.scenario.Pathloss.Deny(),
-                                               scenarioWrap = False,
-                                               sizeX = scenarioXSize,
-                                               sizeY = scenarioYSize)
-#myShadowing = rise.scenario.Shadowing.SpatialCorrelated(shadowSigma=5, correlationDistance=50)
+myPathloss = rise.scenario.Pathloss.PyFunction(
+    validFrequencies = Interval(2000, 6000),
+    validDistances = Interval(2, 5000), #[m]
+    offset = dB(-27.552219),
+    freqFactor = 20,
+    distFactor = 35,
+    distanceUnit = "m", # only for the formula, not for validDistances
+    minPathloss = dB(42), # pathloss at 2m distance
+    outOfMinRange = rise.scenario.Pathloss.Constant("42 dB"),
+    outOfMaxRange = rise.scenario.Pathloss.Deny(),
+    scenarioWrap = False,
+    sizeX = sizeX,
+    sizeY = sizeY)
 myShadowing = rise.scenario.Shadowing.No()
 myFastFading = rise.scenario.FastFading.No()
-propagationConfig = rise.scenario.Propagation.Configuration(pathloss = myPathloss, shadowing = myShadowing, fastFading = myFastFading)
+propagationConfig = rise.scenario.Propagation.Configuration(
+    pathloss = myPathloss,
+    shadowing = myShadowing,
+    fastFading = myFastFading)
 # End radio channel propagation parameters
 ##########################################
 
 ###################################
 #Create nodes using the NodeCreator
-nc = wifimac.support.NodeCreator.NodeCreator(propagationConfig)
+nc = wifimac.support.NodeCreator(propagationConfig)
 
 # one RANG
 rang = nc.createRANG()
@@ -88,8 +112,10 @@ if(ulIsActive):
     # The RANG only has one IPListenerBinding that is attached
     # to the listener. The listener is the only traffic sink
     # within the RANG
-    ipListenerBinding = constanze.Node.IPListenerBinding(rang.nl.domainName, parentLogger=rang.logger)
-    listener = constanze.Node.Listener(rang.nl.domainName + ".listener", probeWindow = 0.1, parentLogger=rang.logger)
+    ipListenerBinding = constanze.Node.IPListenerBinding(
+        rang.nl.domainName, parentLogger=rang.logger)
+    listener = constanze.Node.Listener(
+        rang.nl.domainName + ".listener", probeWindow = 0.1, parentLogger=rang.logger)
     rang.load.addListener(ipListenerBinding, listener)
     rang.nl.windowedEndToEndProbe.config.windowSize = 2.0
     rang.nl.windowedEndToEndProbe.config.sampleInterval = 0.5
@@ -97,27 +123,27 @@ WNS.nodes.append(rang)
 
 # create (magic) service nodes
 # One virtual ARP Zone
-varp = VirtualARPServer("VARP", "theOnlyZone")
+varp = ip.VirtualARP.VirtualARPServer("VARP", "theOnlyZone")
 varp.logger.level = commonLoggerLevel
 WNS.nodes.append(varp)
 
 # One virtual DNS server
-vdns = VirtualDNSServer("VDNS", "ip.DEFAULT.GLOBAL")
+vdns = ip.VirtualDNS.VirtualDNSServer("VDNS", "ip.DEFAULT.GLOBAL")
 vdns.logger.level = commonLoggerLevel
 WNS.nodes.append(vdns)
 
 # One virtual pathselection server
-vps = wifimac.PathSelection.VirtualPSServer("VPS", numNodes = (numSTAs + (numMPs+2)*2 + 1))
+vps = wifimac.pathselection.VirtualPSServer("VPS", numNodes = (numSTAs + (numMPs+2)*2 + 1))
 vps.logger.level = commonLoggerLevel
 WNS.nodes.append(vps)
 
 # One virtual capability information base server
-vcibs = wifimac.CapabilityInformationBase.VirtualCababilityInformationService("VCIB")
+vcibs = wifimac.management.InformationBases.VirtualCababilityInformationService("VCIB")
 vcibs.logger.level = commonLoggerLevel
 WNS.nodes.append(vcibs)
 
 # Single instance of id-generator for all nodes with ids
-idGen = wifimac.support.NodeCreator.idGenerator()
+idGen = wifimac.support.idGenerator()
 
 # save IDs for probes
 apIDs = []
@@ -130,7 +156,7 @@ mpAdrs = []
 bssCount = 0
 
 # One AP at the beginning
-apConfig = wifimac.support.Config.Node(position = wns.Position(distanceBetweenMPs/2, 0, 0))
+apConfig = wifimac.support.Node(position = wns.Position(distanceBetweenMPs/2, 0, 0))
 apConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001, frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
 apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001, frequency = meshFrequency))
 ap = nc.createAP(idGen = idGen,
@@ -147,7 +173,7 @@ print "Created AP at (", distanceBetweenMPs/2, ", 0, 0) with id ", ap.id, " and 
 # Create MPs
 for i in xrange(numMPs):
     bssCount+=1
-    mpConfig = wifimac.support.Config.Node(position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(i+1), 0, 0))
+    mpConfig = wifimac.support.Node(position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(i+1), 0, 0))
     mpConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001*(i+2), frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
     mpConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(i+2), frequency = meshFrequency))
     mp = nc.createMP(idGen = idGen,
@@ -163,7 +189,7 @@ for i in xrange(numMPs):
 # Create Last AP at the end
 if(numAPs > 1):
     bssCount+=1
-    apConfig = wifimac.support.Config.Node(position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(numMPs+1), 0, 0))
+    apConfig = wifimac.support.Node(position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(numMPs+1), 0, 0))
     apConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001*(numMPs+3), frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
     apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(numMPs+3), frequency = meshFrequency))
     ap = nc.createAP(idGen = idGen,
@@ -179,7 +205,7 @@ if(numAPs > 1):
 
 # Create STAs in equidistance spread out over scenario
 if(numSTAs > 1):
-    staDist = scenarioXSize/(numSTAs-1)
+    staDist = sizeX/(numSTAs-1)
 else:
     staDist = 1
 

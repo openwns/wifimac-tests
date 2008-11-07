@@ -1,8 +1,8 @@
         WNS
        =====
                  Status: Simulation is still running
-                     Start: Fri Oct 10 15:30:26 2008
-                       Now: Fri Oct 10 15:30:26 2008
+                     Start: Wed Oct 22 20:30:22 2008
+                       Now: Wed Oct 22 20:30:22 2008
                   Duration:             0:00:00
 
               Simulation time: 0
@@ -19,35 +19,35 @@ The following output is read from /proc/self/status
 ----------------------------------------------------------
 Name:	wns-core
 State:	R (running)
-Tgid:	9677
-Pid:	9677
-PPid:	9676
+Tgid:	7406
+Pid:	7406
+PPid:	7405
 TracerPid:	0
 Uid:	2474	2474	2474	2474
 Gid:	1348	1348	1348	1348
 FDSize:	32
 Groups:	1000 1002 1278 1332 1337 1348 7031 65535 
-VmPeak:	   72264 kB
-VmSize:	   72264 kB
+VmPeak:	   84800 kB
+VmSize:	   84800 kB
 VmLck:	       0 kB
-VmHWM:	   33000 kB
-VmRSS:	   33000 kB
-VmData:	   21080 kB
-VmStk:	     156 kB
+VmHWM:	   34228 kB
+VmRSS:	   34228 kB
+VmData:	   37544 kB
+VmStk:	     164 kB
 VmExe:	      16 kB
-VmLib:	   48980 kB
-VmPTE:	     120 kB
-Threads:	3
-SigQ:	0/131072
+VmLib:	   45136 kB
+VmPTE:	     124 kB
+Threads:	5
+SigQ:	1/131072
 SigPnd:	0000000000000000
 ShdPnd:	0000000000000000
 SigBlk:	0000000000000000
 SigIgn:	0000000001001000
-SigCgt:	0000000180000422
+SigCgt:	0000000180800422
 CapInh:	0000000000000000
 CapPrm:	0000000000000000
 CapEff:	0000000000000000
 Cpus_allowed:	ff
 Mems_allowed:	1
-voluntary_ctxt_switches:	197
-nonvoluntary_ctxt_switches:	47
+voluntary_ctxt_switches:	161
+nonvoluntary_ctxt_switches:	82

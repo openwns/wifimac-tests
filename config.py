@@ -1,7 +1,32 @@
+###############################################################################
+# This file is part of openWNS (open Wireless Network Simulator)
+# _____________________________________________________________________________
+#
+# Copyright (C) 2004-2008
+# Chair of Communication Networks (ComNets)
+# Kopernikusstr. 16, D-52074 Aachen, Germany
+# phone: ++49-241-80-27910,
+# fax: ++49-241-80-22242
+# email: info@openwns.org
+# www: http://www.openwns.org
+# _____________________________________________________________________________
+#
+# openWNS is free software; you can redistribute it and/or modify it under the
+# terms of the GNU Lesser General Public License version 2 as published by the
+# Free Software Foundation;
+#
+# openWNS is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+# details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+###############################################################################
 import wns
 
-import wifimac.support.NodeCreator
-import wifimac.support.Config
+import wifimac.support.Transceiver
 
 #######################
 # Simulation parameters
@@ -11,7 +36,7 @@ import wifimac.support.Config
 # Traffic is either DL only or bidirectional
 #
 simTime = 5.5
-settlingTime = 2.0
+settlingTime = 3.0
 commonLoggerLevel = 1
 dllLoggerLevel = 2
 
@@ -41,23 +66,23 @@ bssFrequencies = [2400, 2440, 2480]
 # Node configuration
 
 # configuration class for AP and MP mesh transceivers
-class MyMeshTransceiver(wifimac.support.Config.MeshTransceiver):
+class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
     def __init__(self, beaconDelay, frequency):
-        super(MyMeshTransceiver, self).__init__(frequency, forwarding = True)
+        super(MyMeshTransceiver, self).__init__(frequency)
         # changes to the default config
         self.layer2.beacon.delay = beaconDelay
 
 # configuration class for AP and MP BSS transceivers
-class MyBSSTransceiver(wifimac.support.Config.MeshTransceiver):
+class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
     def __init__(self, beaconDelay, frequency):
-        super(MyBSSTransceiver, self).__init__(frequency, forwarding = False)
+        super(MyBSSTransceiver, self).__init__(frequency)
         self.layer2.beacon.delay = beaconDelay
         self.layer2.mode = 'basic'
         self.layer2.ra.raStrategy = 'ConstantLow'
         self.layer2.rtsctsThreshold = 800#1e6*8
 
 # configuration class for STAs
-class MySTAConfig(wifimac.support.Config.Station):
+class MySTAConfig(wifimac.support.Transceiver.Station):
     def __init__(self, initFrequency, position, scanFrequencies, scanDurationPerFrequency):
         super(MySTAConfig, self).__init__(frequency = initFrequency,
                                           position = position,
