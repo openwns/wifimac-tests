@@ -29,13 +29,13 @@ random.seed(22)
 
 import dll
 
-import wns.WNS
-import wns.Logger
-from wns import dB, dBm, fromdB, fromdBm
-from wns.Interval import Interval
+import openwns
+import openwns.logger
+from openwns import dB, dBm, fromdB, fromdBm
+from openwns.interval import Interval
 
-import constanze.Constanze
-import constanze.Node
+import constanze.traffic
+import constanze.node
 
 import wifimac.support
 import wifimac.pathselection
@@ -53,8 +53,8 @@ import ip.VirtualDNS
 
 # create an instance of the WNS configuration
 # The variable must be called WNS!!!!
-WNS = wns.WNS.WNS()
-WNS.outputStrategy = wns.WNS.OutputStrategy.DELETE
+WNS = openwns.Simulator(simulationModel = openwns.node.NodeSimulationModel())
+WNS.outputStrategy = openwns.simulator.OutputStrategy.DELETE
 WNS.maxSimTime = simTime
 WNS.statusWriteInterval = 120 # in seconds realTime
 WNS.probesWriteInterval = 3600 # in seconds realTime
@@ -112,35 +112,35 @@ if(ulIsActive):
     # The RANG only has one IPListenerBinding that is attached
     # to the listener. The listener is the only traffic sink
     # within the RANG
-    ipListenerBinding = constanze.Node.IPListenerBinding(
+    ipListenerBinding = constanze.node.IPListenerBinding(
         rang.nl.domainName, parentLogger=rang.logger)
-    listener = constanze.Node.Listener(
+    listener = constanze.node.Listener(
         rang.nl.domainName + ".listener", probeWindow = 0.1, parentLogger=rang.logger)
     rang.load.addListener(ipListenerBinding, listener)
     rang.nl.windowedEndToEndProbe.config.windowSize = 2.0
     rang.nl.windowedEndToEndProbe.config.sampleInterval = 0.5
-WNS.nodes.append(rang)
+WNS.simulationModel.nodes.append(rang)
 
 # create (magic) service nodes
 # One virtual ARP Zone
 varp = ip.VirtualARP.VirtualARPServer("VARP", "theOnlyZone")
 varp.logger.level = commonLoggerLevel
-WNS.nodes.append(varp)
+WNS.simulationModel.nodes.append(varp)
 
 # One virtual DNS server
 vdns = ip.VirtualDNS.VirtualDNSServer("VDNS", "ip.DEFAULT.GLOBAL")
 vdns.logger.level = commonLoggerLevel
-WNS.nodes.append(vdns)
+WNS.simulationModel.nodes.append(vdns)
 
 # One virtual pathselection server
 vps = wifimac.pathselection.VirtualPSServer("VPS", numNodes = (numSTAs + (numMPs+2)*2 + 1))
 vps.logger.level = commonLoggerLevel
-WNS.nodes.append(vps)
+WNS.simulationModel.nodes.append(vps)
 
 # One virtual capability information base server
 vcibs = wifimac.management.InformationBases.VirtualCababilityInformationService("VCIB")
 vcibs.logger.level = commonLoggerLevel
-WNS.nodes.append(vcibs)
+WNS.simulationModel.nodes.append(vcibs)
 
 # Single instance of id-generator for all nodes with ids
 idGen = wifimac.support.idGenerator()
@@ -156,7 +156,7 @@ mpAdrs = []
 bssCount = 0
 
 # One AP at the beginning
-apConfig = wifimac.support.Node(position = wns.Position(distanceBetweenMPs/2, 0, 0))
+apConfig = wifimac.support.Node(position = openwns.Position(distanceBetweenMPs/2, 0, 0))
 apConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001, frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
 apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001, frequency = meshFrequency))
 ap = nc.createAP(idGen = idGen,
@@ -164,7 +164,7 @@ ap = nc.createAP(idGen = idGen,
                  config = apConfig)
 ap.logger.level = commonLoggerLevel
 ap.dll.logger.level = dllLoggerLevel
-WNS.nodes.append(ap)
+WNS.simulationModel.nodes.append(ap)
 apIDs.append(ap.id)
 apAdrs.extend(ap.dll.addresses)
 rang.dll.addAP(ap)
@@ -173,7 +173,7 @@ print "Created AP at (", distanceBetweenMPs/2, ", 0, 0) with id ", ap.id, " and 
 # Create MPs
 for i in xrange(numMPs):
     bssCount+=1
-    mpConfig = wifimac.support.Node(position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(i+1), 0, 0))
+    mpConfig = wifimac.support.Node(position = openwns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(i+1), 0, 0))
     mpConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001*(i+2), frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
     mpConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(i+2), frequency = meshFrequency))
     mp = nc.createMP(idGen = idGen,
@@ -181,7 +181,7 @@ for i in xrange(numMPs):
                      config = mpConfig)
     mp.logger.level = commonLoggerLevel
     mp.dll.logger.level = dllLoggerLevel
-    WNS.nodes.append(mp)
+    WNS.simulationModel.nodes.append(mp)
     mpIDs.append(mp.id)
     mpAdrs.extend(mp.dll.addresses)
     print "Created MP at (", distanceBetweenMPs/2+distanceBetweenMPs*(i+1), ", 0, 0) with id ", mp.id, " and addresses ", mp.dll.addresses
@@ -189,7 +189,7 @@ for i in xrange(numMPs):
 # Create Last AP at the end
 if(numAPs > 1):
     bssCount+=1
-    apConfig = wifimac.support.Node(position = wns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(numMPs+1), 0, 0))
+    apConfig = wifimac.support.Node(position = openwns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(numMPs+1), 0, 0))
     apConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001*(numMPs+3), frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
     apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(numMPs+3), frequency = meshFrequency))
     ap = nc.createAP(idGen = idGen,
@@ -197,7 +197,7 @@ if(numAPs > 1):
                      config = apConfig)
     ap.logger.level = commonLoggerLevel
     ap.dll.logger.level = dllLoggerLevel
-    WNS.nodes.append(ap)
+    WNS.simulationModel.nodes.append(ap)
     apIDs.append(ap.id)
     apAdrs.extend(ap.dll.addresses)
     rang.dll.addAP(ap)
@@ -211,7 +211,7 @@ else:
 
 for j in xrange(numSTAs):
     staConfig = MySTAConfig(initFrequency = bssFrequencies[0],
-                            position = wns.Position(staDist*j,verticalDistanceSTAandMP,0),
+                            position = openwns.Position(staDist*j,verticalDistanceSTAandMP,0),
                             scanFrequencies = bssFrequencies,
                             scanDurationPerFrequency = 0.3)
 
@@ -222,19 +222,19 @@ for j in xrange(numSTAs):
 
     if(dlIsActive):
         # DL load RANG->STA
-        cbrDL = constanze.Constanze.CBR(startDelayDL+random.random()*0.001, offeredDL, meanPacketSize, parentLogger=rang.logger)
-        ipBinding = constanze.Node.IPBinding(rang.nl.domainName, sta.nl.domainName, parentLogger=rang.logger)
+        cbrDL = constanze.traffic.CBR(startDelayDL+random.random()*0.001, offeredDL, meanPacketSize, parentLogger=rang.logger)
+        ipBinding = constanze.node.IPBinding(rang.nl.domainName, sta.nl.domainName, parentLogger=rang.logger)
         rang.load.addTraffic(ipBinding, cbrDL)
 
         # Listener at STA for DL
-        ipListenerBinding = constanze.Node.IPListenerBinding(sta.nl.domainName, parentLogger=sta.logger)
-        listener = constanze.Node.Listener(sta.nl.domainName + ".listener", probeWindow = 0.1, parentLogger=sta.logger)
+        ipListenerBinding = constanze.node.IPListenerBinding(sta.nl.domainName, parentLogger=sta.logger)
+        listener = constanze.node.Listener(sta.nl.domainName + ".listener", probeWindow = 0.1, parentLogger=sta.logger)
         sta.load.addListener(ipListenerBinding, listener)
 
     if(ulIsActive):
         # UL load STA->RANG
-        cbrUL = constanze.Constanze.CBR(startDelayUL+random.random()*0.001, offeredUL, meanPacketSize, parentLogger=sta.logger)
-        ipBinding = constanze.Node.IPBinding(sta.nl.domainName, rang.nl.domainName, parentLogger=sta.logger)
+        cbrUL = constanze.traffic.CBR(startDelayUL+random.random()*0.001, offeredUL, meanPacketSize, parentLogger=sta.logger)
+        ipBinding = constanze.node.IPBinding(sta.nl.domainName, rang.nl.domainName, parentLogger=sta.logger)
         sta.load.addTraffic(ipBinding, cbrUL)
 
     # IP Route Table
@@ -249,7 +249,7 @@ for j in xrange(numSTAs):
                      "wifi")
 
     # Add STA
-    WNS.nodes.append(sta)
+    WNS.simulationModel.nodes.append(sta)
     staIDs.append(sta.id)
 # End create nodes
 ##################
@@ -273,3 +273,4 @@ wifimac.evaluation.ip.installEvaluation(sim = WNS,
                                         settlingTime = settlingTime,
                                         maxPacketDelay = 0.1,     # s
                                         maxBitThroughput = (numSTAs+1)*(offeredDL+offeredUL))  # Bit/s
+openwns.setSimulator(WNS)
