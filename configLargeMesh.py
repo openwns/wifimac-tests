@@ -105,7 +105,6 @@ class MyMeshTransceiver(wifimac.support.Config.MeshTransceiver):
         self.layer2.bufferSize = 50
         self.layer2.bufferSizeUnit = 'PDU'
         self.layer2.manager.numAntennas = 4#params.numAntenn
-        self.layer2.mode = 'basic'
 
 # configuration class for AP and MP BSS transceivers
 class MyBSSTransceiver(wifimac.support.Config.MeshTransceiver):
@@ -124,7 +123,6 @@ class MyBSSTransceiver(wifimac.support.Config.MeshTransceiver):
         self.layer2.bufferSize = 25
         self.layer2.bufferSizeUnit = 'PDU'
         self.layer2.manager.numAntennas = 1#params.numAntennas
-        self.layer2.mode = 'basic'
         self.txPower = dBm(20)
 
 # configuration class for STAs
@@ -140,7 +138,6 @@ class MySTAConfig(wifimac.support.Config.Station):
         else:
             self.layer2.rtsctsThreshold = 800000000
 #        self.layer2.rtsctsThreshold = 800*8#params.rstctsThreshold
-        self.layer2.mode = 'basic'
         self.txPower = dBm(20)
 
 # End node configuration

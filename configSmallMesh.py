@@ -73,7 +73,8 @@ class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
         super(MyMeshTransceiver, self).__init__(frequency)
         # changes to the default config
         self.layer2.beacon.delay = beaconDelay
-        self.layer2.mode = 'DraftN'
+        self.layer2.funTemplate = wifimac.FUNModes.DraftN
+        self.layer2.expectedACKDuration = 68E-6
         self.layer2.ra.raStrategy = 'SINRwithMIMO'
         self.layer2.txop.txopLimit = 0.0
         self.layer2.rtscts.rtsctsOnTxopData = True
@@ -93,7 +94,8 @@ class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
     def __init__(self, beaconDelay, frequency):
         super(MyBSSTransceiver, self).__init__(frequency)
         self.layer2.beacon.delay = beaconDelay
-        self.layer2.mode = 'DraftN'
+        self.layer2.funTemplate = wifimac.FUNModes.DraftN
+        self.layer2.expectedACKDuration = 68E-6
         self.layer2.ra.raStrategy = 'SINR'
         self.layer2.txop.txopLimit = 0.0
         self.layer2.rtscts.rtsctsOnTxopData = True
@@ -115,7 +117,8 @@ class MySTAConfig(wifimac.support.Transceiver.Station):
                                           position = position,
                                           scanFrequencies = scanFrequencies,
                                           scanDuration = scanDurationPerFrequency)
-        self.layer2.mode = 'DraftN'
+        self.layer2.funTemplate = wifimac.FUNModes.DraftN
+        self.layer2.expectedACKDuration = 68E-6
         self.layer2.ra.raStrategy = 'SINR'
 
         if(rtscts):
