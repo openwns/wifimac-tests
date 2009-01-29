@@ -28,12 +28,12 @@ import random
 random.seed(22)
 import math
 
-import wns.WNS
-import wns.Logger
-from wns import dB, dBm, fromdB, fromdBm
+import openwns
+import openwns.logger
+from openwns import dB, dBm, fromdB, fromdBm
 
-import constanze.Constanze
-import constanze.Node
+import constanze.traffic
+import constanze.node
 
 import wifimac.support
 import wifimac.support.ScenarioFile
@@ -142,8 +142,8 @@ class MySTAConfig(wifimac.support.Transceiver.Station):
 
 # create an instance of the WNS configuration
 # The variable must be called WNS!!!!
-WNS = wns.WNS.WNS()
-WNS.outputStrategy = wns.WNS.OutputStrategy.DELETE
+WNS = openwns.Simulator(simulationModel = openwns.node.NodeSimulationModel())
+WNS.outputStrategy = openwns.simulator.OutputStrategy.DELETE
 WNS.maxSimTime = simTime
 #WNS.masterLogger.backtrace.enabled = True
 #WNS.masterLogger.enabled = True
@@ -215,28 +215,28 @@ if(ratioUL > 0):
     rang.load.addListener(ipListenerBinding, listener)
     rang.nl.windowedEndToEndProbe.config.windowSize = 1.0
     rang.nl.windowedEndToEndProbe.config.sampleInterval = 0.5
-WNS.nodes.append(rang)
+WNS.simulationModel.nodes.append(rang)
 
 # create (magic) service nodes
 # One virtual ARP Zone
 varp = ip.VirtualARP.VirtualARPServer("VARP", "theOnlyZone")
 varp.logger.level = commonLoggerLevel
-WNS.nodes.append(varp)
+WNS.simulationModel.nodes.append(varp)
 
 # One virtual DNS server
 vdns = ip.VirtualDNS.VirtualDNSServer("VDNS", "ip.DEFAULT.GLOBAL")
 vdns.logger.level = commonLoggerLevel
-WNS.nodes.append(vdns)
+WNS.simulationModel.nodes.append(vdns)
 
 # One virtual pathselection server
 vps = wifimac.pathselection.VirtualPSServer("VPS", numNodes = numSTAs + (len(posList)*(len(meshFrequencies)+1))+1)
 vps.logger.level = dllLoggerLevel
-WNS.nodes.append(vps)
+WNS.simulationModel.nodes.append(vps)
 
 # One virtual capability information base server
 vcibs = wifimac.management.InformationBases.VirtualCababilityInformationService("VCIB")
 vcibs.logger.level = commonLoggerLevel
-WNS.nodes.append(vcibs)
+WNS.simulationModel.nodes.append(vcibs)
 
 # Single instance of id-generator for all nodes with ids
 idGen = wifimac.support.idGenerator()
@@ -255,7 +255,9 @@ bssCount = 0
 # At least one, at most such that the ratio MPs/(MPs+APs) is above the given parameter
 while(len(posList)*1.0/(MPsPerAP+1) > len(apIDs)):
     # create AP configuration
-    apConfig = wifimac.support.Node(position = wns.Position(posList[apPrefList[len(apIDs)]][0], posList[apPrefList[len(apIDs)]][1], 0))
+
+    apConfig = wifimac.support.Node(position = openwns.Position(posList[apPrefList[len(apIDs)]][0], posList[apPrefList[len(apIDs)]][1], 0))
+
     # add BSS transceiver
     apConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001*(len(apIDs)+1+random.random()),
                                                   frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
@@ -275,7 +277,7 @@ while(len(posList)*1.0/(MPsPerAP+1) > len(apIDs)):
     ap = nc.createAP(idGen, managerPool, apConfig)
     ap.logger.level = commonLoggerLevel
     ap.dll.logger.level = dllLoggerLevel
-    WNS.nodes.append(ap)
+    WNS.simulationModel.nodes.append(ap)
     apIDs.append(ap.id)
     apAdrs.extend(ap.dll.addresses)
     rang.dll.addAP(ap)
@@ -288,7 +290,8 @@ print "Created", len(apIDs), "APs"
 for i in xrange(len(apIDs), len(posList)):
     if(numMeshTransceivers > 1) and (len(mrmc.getFrequenciesForNode(bssCount)) == 0):
         continue
-    mpConfig = wifimac.support.Node(position = wns.Position(posList[apPrefList[i]][0], posList[apPrefList[i]][1], 0))
+
+    mpConfig = wifimac.support.Node(position = openwns.Position(posList[apPrefList[i]][0], posList[apPrefList[i]][1], 0))
     mpConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001*(i+1+random.random()),
                                                   frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
     if(numMeshTransceivers > 1):
@@ -302,7 +305,7 @@ for i in xrange(len(apIDs), len(posList)):
     mp = nc.createMP(idGen, managerPool, mpConfig)
     mp.logger.level = commonLoggerLevel
     mp.dll.logger.level = dllLoggerLevel
-    WNS.nodes.append(mp)
+    WNS.simulationModel.nodes.append(mp)
     mpIDs.append(mp.id)
     mpAdrs.extend(mp.dll.addresses)
 
@@ -323,7 +326,7 @@ lineCount = 0
 
 for i in xrange(numSTAs):
     staConfig = MySTAConfig(initFrequency = bssFrequencies[0],
-                            position = wns.Position(gridX, gridY, 0),
+                            position = openwns.Position(gridX, gridY, 0),
                             scanFrequencies = bssFrequencies,
                             scanDurationPerFrequency = 0.3)
     sta = nc.createSTA(idGen, managerPool, config = staConfig)
@@ -380,7 +383,7 @@ for i in xrange(numSTAs):
                      "wifi")
 
     # Add STA
-    WNS.nodes.append(sta)
+    WNS.simulationModel.nodes.append(sta)
     staIDs.append(sta.id)
 
 print "Created %d STAs, last one at pos %d/%d" % (len(staIDs), gridX, gridY)
@@ -410,3 +413,4 @@ wifimac.evaluation.ip.installEvaluation(sim = WNS,
 
 print "maxHopCount here: ", int(maxPathLength[1:][len(apIDs)-1])+1
 
+openwns.setSimulator(WNS)

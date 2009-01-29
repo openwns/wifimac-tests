@@ -29,12 +29,12 @@
 import random
 random.seed(22)
 
-import wns.WNS
-from wns import dB, dBm, fromdB, fromdBm
-from wns.Interval import Interval
+import openwns
+from openwns import dB, dBm, fromdB, fromdBm
+from openwns.interval import Interval
 
-import constanze.Constanze
-import constanze.Node
+import constanze.traffic
+import constanze.node
 
 import ip.VirtualARP
 import ip.VirtualDNS
@@ -79,8 +79,8 @@ networkFrequency = 5500
 # begin example "wifimac.tutorial.experiment1.config.WNS"
 # create an instance of the WNS configuration
 # The variable must be called WNS!!!!
-WNS = wns.WNS.WNS()
-WNS.outputStrategy = wns.WNS.OutputStrategy.DELETE
+WNS = openwns.Simulator(simulationModel = openwns.node.NodeSimulationModel())
+WNS.outputStrategy = openwns.simulator.OutputStrategy.DELETE
 WNS.maxSimTime = simTime
 WNS.statusWriteInterval = 120 # in seconds realTime
 WNS.probesWriteInterval = 3600 # in seconds realTime
@@ -144,35 +144,35 @@ if(ulIsActive):
     # The RANG only has one IPListenerBinding that is attached
     # to the listener. The listener is the only traffic sink
     # within the RANG
-    ipListenerBinding = constanze.Node.IPListenerBinding(
+    ipListenerBinding = constanze.node.IPListenerBinding(
         rang.nl.domainName, parentLogger=rang.logger)
-    listener = constanze.Node.Listener(
+    listener = constanze.node.Listener(
         rang.nl.domainName + ".listener", probeWindow = 0.1, parentLogger=rang.logger)
     rang.load.addListener(ipListenerBinding, listener)
     rang.nl.windowedEndToEndProbe.config.windowSize = 1.0
     rang.nl.windowedEndToEndProbe.config.sampleInterval = 0.5
-WNS.nodes.append(rang)
+WNS.simulationModel.nodes.append(rang)
 
 # create (magic) service nodes
 # One virtual ARP Zone
 varp = ip.VirtualARP.VirtualARPServer("VARP", "theOnlyZone")
 varp.logger.level = commonLoggerLevel
-WNS.nodes.append(varp)
+WNS.simulationModel.nodes.append(varp)
 
 # One virtual DNS server
 vdns = ip.VirtualDNS.VirtualDNSServer("VDNS", "ip.DEFAULT.GLOBAL")
 vdns.logger.level = commonLoggerLevel
-WNS.nodes.append(vdns)
+WNS.simulationModel.nodes.append(vdns)
 
 # One virtual pathselection server
 vps = wifimac.pathselection.VirtualPSServer("VPS", numNodes = 2)
 vps.logger.level = commonLoggerLevel
-WNS.nodes.append(vps)
+WNS.simulationModel.nodes.append(vps)
 
 # One virtual capability information base server
 vcibs = wifimac.management.InformationBases.VirtualCababilityInformationService("VCIB")
 vcibs.logger.level = commonLoggerLevel
-WNS.nodes.append(vcibs)
+WNS.simulationModel.nodes.append(vcibs)
 
 # end example
 
@@ -200,12 +200,12 @@ apTransceiver.layer2.ra.raStrategy = 'Opportunistic'
 apTransceiver.layer2.rtsctsThreshold = 8e6
 
 ## Create AP node
-apConfig = wifimac.support.Node(position = wns.Position(0,0,0))
+apConfig = wifimac.support.Node(position = openwns.Position(0,0,0))
 apConfig.transceivers.append(apTransceiver)
 ap = nc.createAP(idGen, managerPool, apConfig)
 ap.logger.level = commonLoggerLevel
 ap.dll.logger.level = dllLoggerLevel
-WNS.nodes.append(ap)
+WNS.simulationModel.nodes.append(ap)
 apIDs.append(ap.id)
 apAdrs.extend(ap.dll.addresses)
 rang.dll.addAP(ap)
@@ -216,7 +216,7 @@ print "Created AP at (0,0,0) with id ", ap.id, " and addresses ", ap.dll.address
 # begin example "wifimac.tutorial.experiment1.config.NodeCreation.STA.node"
 # Create Station Transceiver
 staConfig = wifimac.support.Transceiver.Station(frequency = networkFrequency,
-                                                position = wns.Position(distance, 0, 0),
+                                                position = openwns.Position(distance, 0, 0),
                                                 scanFrequencies = [networkFrequency],
                                                 scanDuration = 0.3)
 # Transmission power
@@ -235,30 +235,30 @@ sta.dll.logger.level = dllLoggerLevel
 # begin example "wifimac.tutorial.experiment1.config.NodeCreation.STA.Traffic"
 if(dlIsActive):
     # DL load RANG->STA
-    cbrDL = constanze.Constanze.Poisson(startDelayDL+random.random()*0.001,
+    cbrDL = constanze.traffic.Poisson(startDelayDL+random.random()*0.001,
                                         offeredDL,
                                         packetSize,
                                         parentLogger=rang.logger)
-    ipBinding = constanze.Node.IPBinding(rang.nl.domainName,
+    ipBinding = constanze.node.IPBinding(rang.nl.domainName,
                                          sta.nl.domainName,
                                          parentLogger=rang.logger)
     rang.load.addTraffic(ipBinding, cbrDL)
 
     # Listener at STA for DL
-    ipListenerBinding = constanze.Node.IPListenerBinding(sta.nl.domainName,
+    ipListenerBinding = constanze.node.IPListenerBinding(sta.nl.domainName,
                                                          parentLogger=sta.logger)
-    listener = constanze.Node.Listener(sta.nl.domainName + ".listener",
+    listener = constanze.node.Listener(sta.nl.domainName + ".listener",
                                        probeWindow = 1.0,
                                        parentLogger=sta.logger)
     sta.load.addListener(ipListenerBinding, listener)
 
 if(ulIsActive):
     # UL load STA->RANG
-    cbrUL = constanze.Constanze.Poisson(startDelayUL+random.random()*0.001,
+    cbrUL = constanze.traffic.Poisson(startDelayUL+random.random()*0.001,
                                         offeredUL,
                                         packetSize,
                                         parentLogger=sta.logger)
-    ipBinding = constanze.Node.IPBinding(sta.nl.domainName,
+    ipBinding = constanze.node.IPBinding(sta.nl.domainName,
                                          rang.nl.domainName,
                                          parentLogger=sta.logger)
     sta.load.addTraffic(ipBinding, cbrUL)
@@ -277,7 +277,7 @@ rang.nl.addRoute(sta.nl.dataLinkLayers[0].addressResolver.address,
 
 # begin example "wifimac.tutorial.experiment1.config.NodeCreation.STA.Add"
 # Add STA
-WNS.nodes.append(sta)
+WNS.simulationModel.nodes.append(sta)
 staIDs.append(sta.id)
 print "Created STA at (", distance , ", 0, 0) with id ", sta.id
 # End create nodes
@@ -305,3 +305,4 @@ wifimac.evaluation.ip.installEvaluation(sim = WNS,
 
 # end example
 
+openwns.setSimulator(WNS)
