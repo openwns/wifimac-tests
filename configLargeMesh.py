@@ -25,9 +25,9 @@
 #
 ###############################################################################
 import random
+random.seed(22)
 import math
 
-import wns
 import wns.WNS
 import wns.Logger
 from wns import dB, dBm, fromdB, fromdBm
@@ -35,11 +35,12 @@ from wns import dB, dBm, fromdB, fromdBm
 import constanze.Constanze
 import constanze.Node
 
-import wifimac.support.NodeCreator
+import wifimac.support
 import wifimac.support.ScenarioFile
-import wifimac.support.Config
-import wifimac.PathSelection
-import wifimac.CapabilityInformationBase
+import wifimac.support.MRMCResult
+import wifimac.support.Transceiver
+import wifimac.pathselection
+import wifimac.management.InformationBases
 import wifimac.evaluation.default
 import wifimac.evaluation.ip
 
@@ -47,9 +48,9 @@ import ofdmaphy.OFDMAPhy
 
 import rise.Scenario
 
-from ip.VirtualARP import VirtualARPServer
-from ip.VirtualDHCP import VirtualDHCPServer
-from ip.VirtualDNS import VirtualDNSServer
+import ip.VirtualARP
+#import ip.VirtualDHCP
+import ip.VirtualDNS
 
 #######################
 # Simulation parameters
@@ -61,21 +62,21 @@ commonLoggerLevel = 1
 dllLoggerLevel = 2
 
 # ratio of MPs/APs (upper bound, the actual ratio will be the highest possible value below)
-MPsPerAP = 0.0#params.mpsPerAP
+MPsPerAP = 10.0#params.mpsPerAP
 
 scenarioNumber = 1#params.scenarioNumber
-reducedSize = 300#params.scenarioSize
+reducedSize = 1000#params.scenarioSize
 
 # load
 meanPacketSize = 1480*8#params.packetSize
-numSTAs = 16#params.numberOfSTAs
+numSTAs = 64#params.numberOfSTAs
 offered = 250000#params.offeredTraffic
 ratioUL = 0.1#params.ratioUL
 startDelay = 1.0
 
 # Frequency planning
-numMeshTransceivers = 2#params.numMeshTransceivers
-numMeshFrequencies = 2#params.numMeshFrequencies
+numMeshTransceivers = 1#params.numMeshTransceivers
+numMeshFrequencies = 1#params.numMeshFrequencies
 meshFrequencies = range(5500, 5500+20*numMeshFrequencies, 20)
 bssFrequencies = [2400, 2440, 2480]
 # End simulation parameters
@@ -87,58 +88,53 @@ rtscts = True
 # Node configuration
 
 # configuration class for AP and MP mesh transceivers
-class MyMeshTransceiver(wifimac.support.Config.MeshTransceiver):
+class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
     def __init__(self, beaconDelay, frequency):
-        super(MyMeshTransceiver, self).__init__(frequency, forwarding = True)
+        super(MyMeshTransceiver, self).__init__(frequency)
         # changes to the default config
         self.layer2.beacon.delay = beaconDelay
-        self.layer2.ra.raStrategy = 'SINRwithMIMO'
+        self.layer2.ra.raStrategy = 'SINR'
         if(rtscts):
             self.layer2.rtsctsThreshold = 8*800
         else:
             self.layer2.rtsctsThreshold = 800000000
-        #self.layer2.rtsctsThreshold = 800*8#params.rstctsThreshold
         self.layer2.txop.txopLimit = 0.0#params.txopLimit
         self.layer2.rtscts.rtsctsOnTxopData = True
-        self.layer2.aggregation.maxEntries = 1#params.maxBA
-        self.layer2.blockACK.maxOnAir = 1#params.maxBA
         self.layer2.bufferSize = 50
         self.layer2.bufferSizeUnit = 'PDU'
-        self.layer2.manager.numAntennas = 4#params.numAntenn
+        self.layer2.manager.numAntennas = 1#params.numAntenn
 
 # configuration class for AP and MP BSS transceivers
-class MyBSSTransceiver(wifimac.support.Config.MeshTransceiver):
+class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
     def __init__(self, beaconDelay, frequency):
-        super(MyBSSTransceiver, self).__init__(frequency, forwarding = False)
+        super(MyBSSTransceiver, self).__init__(frequency)
         self.layer2.beacon.delay = beaconDelay
-        self.layer2.ra.raStrategy = 'ConstantLow'
+        self.layer2.ra.raStrategy = 'SINR'
         if(rtscts):
             self.layer2.rtsctsThreshold = 8*800
         else:
             self.layer2.rtsctsThreshold = 800000000
         self.layer2.txop.txopLimit = 0.0#params.txopLimit
         self.layer2.rtscts.rtsctsOnTxopData = True
-        self.layer2.aggregation.maxEntries = 1.0#params.maxBA
-        self.layer2.blockACK.maxOnAir = 1.0#params.maxBA
         self.layer2.bufferSize = 25
         self.layer2.bufferSizeUnit = 'PDU'
         self.layer2.manager.numAntennas = 1#params.numAntennas
-        self.txPower = dBm(20)
+        self.txPower = dBm(30)
 
 # configuration class for STAs
-class MySTAConfig(wifimac.support.Config.Station):
+class MySTAConfig(wifimac.support.Transceiver.Station):
     def __init__(self, initFrequency, position, scanFrequencies, scanDurationPerFrequency):
         super(MySTAConfig, self).__init__(frequency = initFrequency,
                                           position = position,
                                           scanFrequencies = scanFrequencies,
                                           scanDuration = scanDurationPerFrequency)
-        self.layer2.ra.raStrategy = 'ConstantLow'
+        self.layer2.ra.raStrategy = 'SINR'
         if(rtscts):
             self.layer2.rtsctsThreshold = 8*800
         else:
             self.layer2.rtsctsThreshold = 800000000
 #        self.layer2.rtsctsThreshold = 800*8#params.rstctsThreshold
-        self.txPower = dBm(20)
+        self.txPower = dBm(30)
 
 # End node configuration
 ########################
@@ -151,7 +147,7 @@ WNS.outputStrategy = wns.WNS.OutputStrategy.DELETE
 WNS.maxSimTime = simTime
 #WNS.masterLogger.backtrace.enabled = True
 #WNS.masterLogger.enabled = True
-WNS.statusWriteInterval = 120 # in seconds realTime
+WNS.statusWriteInterval = 30+int(random.random()*30) # in seconds realTime
 WNS.probesWriteInterval = 3600 # in seconds realTime
 
 #################
@@ -164,10 +160,9 @@ riseConfig.debug.receiver    = (commonLoggerLevel > 1)
 riseConfig.debug.main = (commonLoggerLevel > 1)
 
 ofdmaPhyConfig = WNS.modules.ofdmaPhy
-managerPool = wifimac.support.NodeCreator.ManagerPool(xSize = scen.desc.sizeX,
-                                                      ySize = scen.desc.sizeY,
-                                                      numMeshChannels = len(meshFrequencies),
-                                                      ofdmaPhyConfig = ofdmaPhyConfig)
+managerPool = wifimac.support.ChannelManagerPool(scenario = rise.Scenario.Scenario(scen.desc.sizeX, scen.desc.sizeY),
+                                                 numMeshChannels = len(meshFrequencies),
+                                                 ofdmaPhyConfig = ofdmaPhyConfig)
 # End create scenario
 #####################
 
@@ -182,7 +177,7 @@ propagationConfig = rise.scenario.Propagation.Configuration(pathloss = myPathlos
 
 ###################################
 #Create nodes using the NodeCreator
-nc = wifimac.support.NodeCreator.NodeCreator(propagationConfig)
+nc = wifimac.support.NodeCreator(propagationConfig)
 
 posList = scen.desc.apPos
 apPrefList = scen.desc.apPrefList
@@ -191,7 +186,7 @@ avgPathLength = scen.desc.avgPathLength
 
 # Multi-Radio Multi-Channel Configuration
 print "mrmc with %f mpsPerAP, %d transceivers, scenario %d" %(MPsPerAP, numMeshTransceivers, scenarioNumber)
-if(MPsPerAP > 0):
+if(MPsPerAP > 0) and (numMeshTransceivers > 1):
     mrmc = wifimac.support.MRMCResult.MRMCLoader('/net/beast1/SMX/smx/SimPlayground/MRMC/mrmcResults.pkl', mpsPerAP = MPsPerAP, numTransceivers = numMeshTransceivers, scenarioId = scenarioNumber)
     valid = False
     while not valid:
@@ -213,8 +208,10 @@ if(ratioUL > 0):
     # The RANG only has one IPListenerBinding that is attached
     # to the listener. The listener is the only traffic sink
     # within the RANG
-    ipListenerBinding = constanze.Node.IPListenerBinding(rang.nl.domainName, parentLogger=rang.logger)
-    listener = constanze.Node.Listener(rang.nl.domainName + ".listener", probeWindow = 0.1, parentLogger=rang.logger)
+    ipListenerBinding = constanze.Node.IPListenerBinding(
+        rang.nl.domainName, parentLogger=rang.logger)
+    listener = constanze.Node.Listener(
+        rang.nl.domainName + ".listener", probeWindow = 0.1, parentLogger=rang.logger)
     rang.load.addListener(ipListenerBinding, listener)
     rang.nl.windowedEndToEndProbe.config.windowSize = 1.0
     rang.nl.windowedEndToEndProbe.config.sampleInterval = 0.5
@@ -222,27 +219,27 @@ WNS.nodes.append(rang)
 
 # create (magic) service nodes
 # One virtual ARP Zone
-varp = VirtualARPServer("VARP", "theOnlyZone")
+varp = ip.VirtualARP.VirtualARPServer("VARP", "theOnlyZone")
 varp.logger.level = commonLoggerLevel
 WNS.nodes.append(varp)
 
 # One virtual DNS server
-vdns = VirtualDNSServer("VDNS", "ip.DEFAULT.GLOBAL")
+vdns = ip.VirtualDNS.VirtualDNSServer("VDNS", "ip.DEFAULT.GLOBAL")
 vdns.logger.level = commonLoggerLevel
 WNS.nodes.append(vdns)
 
 # One virtual pathselection server
-vps = wifimac.PathSelection.VirtualPSServer("VPS", numNodes = numSTAs + (len(posList)*(len(meshFrequencies)+1))+1)
+vps = wifimac.pathselection.VirtualPSServer("VPS", numNodes = numSTAs + (len(posList)*(len(meshFrequencies)+1))+1)
 vps.logger.level = dllLoggerLevel
 WNS.nodes.append(vps)
 
 # One virtual capability information base server
-vcibs = wifimac.CapabilityInformationBase.VirtualCababilityInformationService("VCIB")
+vcibs = wifimac.management.InformationBases.VirtualCababilityInformationService("VCIB")
 vcibs.logger.level = commonLoggerLevel
 WNS.nodes.append(vcibs)
 
 # Single instance of id-generator for all nodes with ids
-idGen = wifimac.support.NodeCreator.idGenerator()
+idGen = wifimac.support.idGenerator()
 
 # save IDs for probes
 apIDs = []
@@ -258,16 +255,22 @@ bssCount = 0
 # At least one, at most such that the ratio MPs/(MPs+APs) is above the given parameter
 while(len(posList)*1.0/(MPsPerAP+1) > len(apIDs)):
     # create AP configuration
-    apConfig = wifimac.support.Config.Node(position = wns.Position(posList[apPrefList[len(apIDs)]][0], posList[apPrefList[len(apIDs)]][1], 0))
+    apConfig = wifimac.support.Node(position = wns.Position(posList[apPrefList[len(apIDs)]][0], posList[apPrefList[len(apIDs)]][1], 0))
     # add BSS transceiver
     apConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001*(len(apIDs)+1+random.random()),
                                                   frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
     # add mesh transceivers, one for each frequency
     if(MPsPerAP > 0):
-        # No mesh, no mesh transceivers
-        for f in mrmc.getFrequenciesForNode(bssCount):
+        if(numMeshTransceivers > 1):
+            # No mesh, no mesh transceivers
+            for f in mrmc.getFrequenciesForNode(bssCount):
+                apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(len(apIDs)+1+random.random()),
+                                                               frequency = f))
+        else:
+            assert(numMeshFrequencies == 1)
             apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(len(apIDs)+1+random.random()),
-                                                           frequency = f))
+                                                           frequency = meshFrequencies[0]))
+
     # create AP instance with config
     ap = nc.createAP(idGen, managerPool, apConfig)
     ap.logger.level = commonLoggerLevel
@@ -283,15 +286,19 @@ print "Created", len(apIDs), "APs"
 
 # Create MPs
 for i in xrange(len(apIDs), len(posList)):
-    if(len(mrmc.getFrequenciesForNode(bssCount)) == 0):
+    if(numMeshTransceivers > 1) and (len(mrmc.getFrequenciesForNode(bssCount)) == 0):
         continue
-    mpConfig = wifimac.support.Config.Node(position = wns.Position(posList[apPrefList[i]][0], posList[apPrefList[i]][1], 0))
+    mpConfig = wifimac.support.Node(position = wns.Position(posList[apPrefList[i]][0], posList[apPrefList[i]][1], 0))
     mpConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001*(i+1+random.random()),
                                                   frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
-    for f in mrmc.getFrequenciesForNode(bssCount):
+    if(numMeshTransceivers > 1):
+        for f in mrmc.getFrequenciesForNode(bssCount):
+            mpConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(i+1+random.random()),
+                                                           frequency = f))
+    else:
         mpConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(i+1+random.random()),
-                                                       frequency = f))
-    
+                                                       frequency = meshFrequencies[0]))
+
     mp = nc.createMP(idGen, managerPool, mpConfig)
     mp.logger.level = commonLoggerLevel
     mp.dll.logger.level = dllLoggerLevel
