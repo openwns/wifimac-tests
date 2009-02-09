@@ -26,8 +26,26 @@
 #
 ###############################################################################
 
+import sys
+
+def searchPathToSDK(path):
+    rootSign = ".thisIsTheRootOfWNS"
+    while rootSign not in os.listdir(path):
+        if path == os.sep:
+            # arrived in root dir
+            return None
+        path, tail = os.path.split(path)
+    return os.path.abspath(path)
+
+pathToSDK = searchPathToSDK(os.path.abspath(os.path.dirname(sys.argv[0])))
+
+if pathToSDK == None:
+    print "Error! You are note within an openWNS-SDK. Giving up"
+    exit(1)
+
+sys.path.append(os.path.join(pathToSDK, "sandbox", "default", "lib", "python2.4", "site-packages"))
+
 # begin example "wifimac.tutorial.experiment1.campaignConfiguration.import"
-import wnsrc
 from pywns.simdb.Parameters import Parameters, Bool, Int, Float, String
 # end example
 
