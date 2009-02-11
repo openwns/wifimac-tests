@@ -27,6 +27,7 @@
 ###############################################################################
 
 import sys
+import os
 
 def searchPathToSDK(path):
     rootSign = ".thisIsTheRootOfWNS"
