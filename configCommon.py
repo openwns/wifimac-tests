@@ -265,7 +265,9 @@ wifimac.evaluation.default.installEvaluation(WNS,
                                              apIDs, mpIDs, staIDs,
                                              apAdrs, mpAdrs, staIDs,
                                              maxHopCount = numMPs+1,
-                                             performanceProbes = True, networkProbes = False)
+                                             performanceProbes = True,
+                                             networkProbes = False,
+                                             draftNProbes = False)
 
 wifimac.evaluation.ip.installEvaluation(sim = WNS,
                                         staIds = staIDs,
