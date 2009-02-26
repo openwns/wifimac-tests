@@ -79,6 +79,7 @@ class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
         self.layer2.beacon.delay = beaconDelay
         self.layer2.ra.raStrategy = 'ConstantLow'
         self.layer2.rtsctsThreshold = 800#1e6*8
+        self.layer2.txop.txopLimit = 0.01
 
 # configuration class for STAs
 class MySTAConfig(wifimac.support.Transceiver.Station):

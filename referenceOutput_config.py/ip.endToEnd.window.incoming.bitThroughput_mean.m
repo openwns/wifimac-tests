@@ -7,4 +7,4 @@
 % 1. Column: MAC.Id
 % 2. Column: value
 
-3	5.084e+06
+3	5.456e+06
