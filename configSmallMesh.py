@@ -55,6 +55,8 @@ ulIsActive = True
 dlIsActive = True
 startDelayUL = 1.01
 startDelayDL = 1.02
+# wether MPs send/receive traffic
+activeMPs = False
 
 # Available frequencies for bss and backbone, in MHz
 meshFrequency = 5500

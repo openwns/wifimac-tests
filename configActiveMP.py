@@ -41,7 +41,7 @@ commonLoggerLevel = 1
 dllLoggerLevel = 2
 
 # length of the string
-numMPs = 0
+numMPs = 1
 numSTAs = 1
 numAPs = 1
 distanceBetweenMPs = 50
@@ -49,14 +49,14 @@ verticalDistanceSTAandMP = 10
 
 # load
 meanPacketSize = 1480 * 8
-offeredDL = 6.0e6
-offeredUL = 0.0e6
-ulIsActive = False
+offeredDL = 1.0e6
+offeredUL = 1.0e6
+ulIsActive = True
 dlIsActive = True
 startDelayUL = 1.01
 startDelayDL = 1.02
 # wether MPs send/receive traffic
-activeMPs = False
+activeMPs = True
 
 # Available frequencies for bss and backbone, in MHz
 meshFrequency = 5500

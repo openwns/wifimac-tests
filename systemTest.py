@@ -58,6 +58,14 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 disabledReason = ""))
 
 testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
+                                                configFile = 'configActiveMP.py',
+                                                runSimulations = True,
+                                                shortDescription = '1AP/1MP/1STA, MP and STA send/receive traffic',
+                                                requireReferenceOutput = True,
+                                                disabled = False,
+                                                disabledReason = ""))
+
+testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
                                                 configFile = 'config.py',
                                                 runSimulations = True,
                                                 shortDescription = 'WiFiMAC-Tutorial: Experiment 1',

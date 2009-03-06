@@ -181,6 +181,35 @@ for i in xrange(numMPs):
                      config = mpConfig)
     mp.logger.level = commonLoggerLevel
     mp.dll.logger.level = dllLoggerLevel
+    if (activeMPs == True):
+	if(dlIsActive):
+        	# DL load RANG->STA
+	        cbrDL = constanze.traffic.CBR(startDelayDL+random.random()*0.001, offeredDL, meanPacketSize, 	parentLogger=rang.logger)
+        	ipBinding = constanze.node.IPBinding(rang.nl.domainName, mp.nl.domainName, parentLogger=rang.logger)
+        	rang.load.addTraffic(ipBinding, cbrDL)
+
+        	# Listener at STA for DL
+        	ipListenerBinding = constanze.node.IPListenerBinding(mp.nl.domainName, parentLogger=mp.logger)
+        	listener = constanze.node.Listener(mp.nl.domainName + ".listener", probeWindow = 0.1, parentLogger=mp.logger)
+        	mp.load.addListener(ipListenerBinding, listener)
+
+    	if(ulIsActive):
+        	# UL load STA->RANG
+        	cbrUL = constanze.traffic.CBR(startDelayUL+random.random()*0.001, offeredUL, meanPacketSize, parentLogger=mp.logger)
+        	ipBinding = constanze.node.IPBinding(mp.nl.domainName, rang.nl.domainName, parentLogger=mp.logger)
+        	mp.load.addTraffic(ipBinding, cbrUL)
+
+    	# IP Route Table
+    	mp.nl.addRoute("192.168.1.0", "255.255.255.0", "0.0.0.0", "wifi")
+    	mp.nl.addRoute(rang.nl.dataLinkLayers[0].addressResolver.address,
+                    "255.255.255.255",
+                    rang.nl.dataLinkLayers[0].addressResolver.address,
+                    "wifi")
+    	rang.nl.addRoute(mp.nl.dataLinkLayers[0].addressResolver.address,
+                     "255.255.255.255",
+                     mp.nl.dataLinkLayers[0].addressResolver.address,
+                     "wifi")
+    	staIDs.append(mp.id)
     WNS.simulationModel.nodes.append(mp)
     mpIDs.append(mp.id)
     mpAdrs.extend(mp.dll.addresses)
