@@ -39,8 +39,10 @@ sys.path.append(os.path.join('..', '..', '..', 'sandbox', 'default', 'lib', 'pyt
 import pywns.WNSUnit
 
 disabled = []
-for arg in sys.argv[1:]:
-    disabled.append(int(arg))
+if __name__ == '__main__':
+    # This is only evaluated if the script is called by hand
+    for arg in sys.argv[1:]:
+        disabled.append(int(arg))
 
 testSuite = pywns.WNSUnit.TestSuite()
 
