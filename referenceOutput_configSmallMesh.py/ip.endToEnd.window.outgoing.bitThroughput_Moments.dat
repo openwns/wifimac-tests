@@ -2,8 +2,8 @@
 # ---------------------------------------------------------------------------
 # Evaluation: Moments
 # ---------------------------------------------------------------------------
-#  Name: no name available
-#  Description: no description available
+#  Name: ip.endToEnd.window.outgoing.bitThroughput
+#  Description: Throughput (outgoing) [bit/s]
 # ---------------------------------------------------------------------------
 #  Evaluation terminated successfully!
 # ---------------------------------------------------------------------------

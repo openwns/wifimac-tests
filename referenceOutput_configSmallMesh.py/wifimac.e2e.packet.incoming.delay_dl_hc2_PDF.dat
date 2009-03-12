@@ -2,30 +2,30 @@
 # ---------------------------------------------------------------------------
 # Evaluation: PDF
 # ---------------------------------------------------------------------------
-#  Name: no name available
-#  Description: no description available
+#  Name: wifimac.e2e.packet.incoming.delay
+#  Description: Incoming packet delay [s]
 # ---------------------------------------------------------------------------
 #  Evaluation terminated successfully!
 # ---------------------------------------------------------------------------
 #  Common Statistics 
-#  Minimum: 0.0007680
-#  Maximum: 0.0008930
+#  Minimum: 0.0006120
+#  Maximum: 0.0008960
 #  Trials: 42
-#  Mean: 0.0007930
+#  Mean: 0.0006596
 # 
 #  Variance: 0.0000000
-#  Relative variance: 0.0005937
-#  Coefficient of variation: 0.0243650
-#  Standard deviation: 0.0000000
-#  Relative standard deviation: 0.0000000
+#  Relative variance: 0.0041857
+#  Coefficient of variation: 0.0646971
+#  Standard deviation: 0.0000427
+#  Relative standard deviation: 0.0646971
 # 
-#  Skewness: 0.0000000
+#  Skewness: 3.7844833
 # 
-#  2nd moment: 0.0000006
+#  2nd moment: 0.0000004
 #  3rd moment: 0.0000000
 # 
-#  Sum of all values: 0.0333050
-#  (Sum of all values)^2: 0.0000264
+#  Sum of all values: 0.0277040
+#  (Sum of all values)^2: 0.0000183
 #  (Sum of all values)^3: 0.0000000
 # -----------------------------------------------------------
 # PDF statistics 
@@ -40,11 +40,11 @@
 #  Overflows in percent: 0
 # -----------------------------------------------------------
 # Percentiles
-#  P01: 0.0000089
-#  P05: 0.0000447
-#  P50: 0.0004465
-#  P95: 0.0008484
-#  P99: 0.0008841
+#  P01: 0.0000090
+#  P05: 0.0000448
+#  P50: 0.0004480
+#  P95: 0.0008512
+#  P99: 0.0008871
 # -----------------------------------------------------------
 # 
 # x_n                  F(x_n)           G(x_n)     P(x_n-1 < X    n
