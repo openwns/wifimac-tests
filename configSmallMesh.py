@@ -98,14 +98,14 @@ class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
         self.layer2.beacon.delay = beaconDelay
         self.layer2.funTemplate = wifimac.FUNModes.DraftN
         self.layer2.expectedACKDuration = 68E-6
-        self.layer2.ra.raStrategy = 'SINR'
+        self.layer2.ra.raStrategy = 'OpportunisticwithMIMO'
         self.layer2.txop.txopLimit = 0.0
         self.layer2.rtscts.rtsctsOnTxopData = True
         self.layer2.aggregation.maxEntries = 10
         self.layer2.blockACK.maxOnAir = 10
         self.layer2.bufferSize = 50
         self.layer2.bufferSizeUnit = 'PDU'
-        self.layer2.manager.numAntennas = 1
+        self.layer2.manager.numAntennas = 3
 
         if(rtscts):
             self.layer2.rtsctsThreshold = meanPacketSize/2
@@ -121,7 +121,8 @@ class MySTAConfig(wifimac.support.Transceiver.Station):
                                           scanDuration = scanDurationPerFrequency)
         self.layer2.funTemplate = wifimac.FUNModes.DraftN
         self.layer2.expectedACKDuration = 68E-6
-        self.layer2.ra.raStrategy = 'SINR'
+        self.layer2.ra.raStrategy = 'OpportunisticwithMIMO'
+        self.layer2.manager.numAntennas = 2
 
         if(rtscts):
             self.layer2.rtsctsThreshold = meanPacketSize/2

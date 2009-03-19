@@ -2,8 +2,8 @@
 # ---------------------------------------------------------------------------
 # Evaluation: PDF
 # ---------------------------------------------------------------------------
-#  Name: no name available
-#  Description: no description available
+#  Name: ip.endToEnd.packet.outgoing.delay
+#  Description: End-to-End Packet Delay (Downlink) [s]
 # ---------------------------------------------------------------------------
 #  Evaluation terminated successfully!
 # ---------------------------------------------------------------------------

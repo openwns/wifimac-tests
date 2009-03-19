@@ -36,13 +36,7 @@ from openwns.interval import Interval
 import constanze.traffic
 import constanze.node
 
-import ip.VirtualARP
-import ip.VirtualDNS
-
 import wifimac.support
-import wifimac.support.Transceiver
-import wifimac.pathselection
-import wifimac.management.InformationBases
 import wifimac.evaluation.default
 import wifimac.evaluation.ip
 
@@ -166,42 +160,14 @@ propagationConfig = rise.scenario.Propagation.Configuration(
 nc = wifimac.support.NodeCreator(propagationConfig)
 
 # one RANG
-rang = nc.createRANG()
-rang.logger.level = commonLoggerLevel
-if(ulIsActive):
-    # The RANG only has one IPListenerBinding that is attached
-    # to the listener. The listener is the only traffic sink
-    # within the RANG
-    ipListenerBinding = constanze.node.IPListenerBinding(
-        rang.nl.domainName, parentLogger=rang.logger)
-    listener = constanze.node.Listener(
-        rang.nl.domainName + ".listener", probeWindow = 0.1, parentLogger=rang.logger)
-    rang.load.addListener(ipListenerBinding, listener)
-    rang.nl.windowedEndToEndProbe.config.windowSize = 1.0
-    rang.nl.windowedEndToEndProbe.config.sampleInterval = 0.5
+rang = nc.createRANG(listener = ulIsActive, loggerLevel = commonLoggerLevel)
 WNS.simulationModel.nodes.append(rang)
 
-# create (magic) service nodes
-# One virtual ARP Zone
-varp = ip.VirtualARP.VirtualARPServer("VARP", "theOnlyZone")
-varp.logger.level = commonLoggerLevel
-WNS.simulationModel.nodes.append(varp)
-
-# One virtual DNS server
-vdns = ip.VirtualDNS.VirtualDNSServer("VDNS", "ip.DEFAULT.GLOBAL")
-vdns.logger.level = commonLoggerLevel
-WNS.simulationModel.nodes.append(vdns)
-
-# One virtual pathselection server
-vps = wifimac.pathselection.VirtualPSServer("VPS", numNodes = (numSTAs + 1))
-vps.logger.level = commonLoggerLevel
-WNS.simulationModel.nodes.append(vps)
-
-# One virtual capability information base server
-vcibs = wifimac.management.InformationBases.VirtualCababilityInformationService("VCIB")
-vcibs.logger.level = commonLoggerLevel
-WNS.simulationModel.nodes.append(vcibs)
-
+# create (magic) service nodes for ARP, DNS, Pathselection, Capability Information
+WNS.simulationModel.nodes.append(nc.createVARP(commonLoggerLevel))
+WNS.simulationModel.nodes.append(nc.createVDNS(commonLoggerLevel))
+WNS.simulationModel.nodes.append(nc.createVPS(numSTAs+1, commonLoggerLevel))
+WNS.simulationModel.nodes.append(nc.createVCIB(commonLoggerLevel))
 # end example
 
 # begin example "wifimac.tutorial.experiment3.config.NodeCreation.AP"
@@ -227,7 +193,7 @@ apTransceiver.layer2.ra.raStrategy = 'ConstantLow'
 # For frames above this threshold (in bit) RTS/CTS will be used
 apTransceiver.layer2.rtsctsThreshold = 8e6
 
-## \brief Create AP node
+## Create AP node
 apConfig = wifimac.support.Node(position = openwns.Position(radius, radius, 0))
 apConfig.transceivers.append(apTransceiver)
 ap = nc.createAP(idGen, managerPool, apConfig)
@@ -253,9 +219,9 @@ for s in xrange(numSTAs):
 
 # begin example "wifimac.tutorial.experiment3.config.NodeCreation.STAs.loop.node"
     staConfig = MySTATransceiver(position = openwns.Position(x, y, 0))
-    sta = nc.createSTA(idGen, managerPool, config = staConfig)
-    sta.logger.level = commonLoggerLevel
-    sta.dll.logger.level = dllLoggerLevel
+    sta = nc.createSTA(idGen, managerPool, rang, config = staConfig,
+                       loggerLevel = commonLoggerLevel,
+                       dllLoggerLevel = dllLoggerLevel)
 # end example
 
 # begin example "wifimac.tutorial.experiment3.config.NodeCreation.STAs.loop.Traffic"
@@ -288,17 +254,6 @@ for s in xrange(numSTAs):
                                              rang.nl.domainName,
                                              parentLogger=sta.logger)
         sta.load.addTraffic(ipBinding, cbrUL)
-
-    # IP Route Table
-    sta.nl.addRoute("192.168.1.0", "255.255.255.0", "0.0.0.0", "wifi")
-    sta.nl.addRoute(rang.nl.dataLinkLayers[0].addressResolver.address,
-                    "255.255.255.255",
-                    rang.nl.dataLinkLayers[0].addressResolver.address,
-                    "wifi")
-    rang.nl.addRoute(sta.nl.dataLinkLayers[0].addressResolver.address,
-                     "255.255.255.255",
-                     sta.nl.dataLinkLayers[0].addressResolver.address,
-                     "wifi")
 
 # end example
 
