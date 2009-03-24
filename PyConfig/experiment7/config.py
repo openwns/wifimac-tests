@@ -44,6 +44,7 @@ import wifimac.pathselection
 import wifimac.management.InformationBases
 import wifimac.evaluation.default
 import wifimac.evaluation.ip
+from wifimac.lowerMAC.RateAdaptation import SINRwithMIMO, Opportunistic
 
 import rise.Scenario
 # end example
@@ -105,7 +106,7 @@ class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
         self.layer2.manager.numAntennas = 3
 
         # rate adaptation uses MIMO transmissions if possible
-        self.layer2.ra.raStrategy = 'SINRwithMIMO'
+        self.layer2.ra.raStrategy = SINRwithMIMO()
 
         # For frames above this threshold (in bit) RTS/CTS will be used
         self.layer2.rtsctsThreshold = 8e6
@@ -138,7 +139,7 @@ class MySTATransceiver(wifimac.support.Transceiver.Station):
 
         # rate adaptation strategy: STAs do not have link quality
         # feedback, hence no SINR-based rate adaptation
-        self.layer2.ra.raStrategy = 'Opportunistic'
+        self.layer2.ra.raStrategy = Opportunistic()
 
         # For frames above this threshold (in bit) RTS/CTS will be used
         self.layer2.rtsctsThreshold = 8e6

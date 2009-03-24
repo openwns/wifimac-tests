@@ -44,6 +44,7 @@ import wifimac.pathselection
 import wifimac.management.InformationBases
 import wifimac.evaluation.default
 import wifimac.evaluation.ip
+from wifimac.lowerMAC.RateAdaptation import Constant
 
 import rise.Scenario
 # end example
@@ -93,7 +94,7 @@ class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
         self.layer2.beacon.delay = beaconDelay
 
         # rate adaptation strategy: Constant BPSK 1/2
-        self.layer2.ra.raStrategy = 'ConstantLow'
+        self.layer2.ra.raStrategy = Constant()
 
         # For frames above this threshold (in bit) RTS/CTS will be used
         self.layer2.rtsctsThreshold = 8e6
@@ -112,7 +113,7 @@ class MySTATransceiver(wifimac.support.Transceiver.Station):
         self.txPower = dBm(20)
 
         # rate adaptation strategy: Constant BPSK 1/2
-        self.layer2.ra.raStrategy = 'ConstantLow'
+        self.layer2.ra.raStrategy = Constant()
 
         # For frames above this threshold (in bit) RTS/CTS will be used
         self.layer2.rtsctsThreshold = 8e6
