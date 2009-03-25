@@ -77,7 +77,6 @@ class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
         # changes to the default config
         self.layer2.beacon.delay = beaconDelay
         self.layer2.bufferSize = 50
-        self.layer2.bufferSizeUnit = 'PDU'
         self.layer2.ra.raStrategy = SINR()
 
         if(rtscts):
@@ -92,7 +91,6 @@ class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
         self.layer2.beacon.delay = beaconDelay
         self.layer2.ra.raStrategy = Opportunistic()
         self.layer2.bufferSize = 50
-        self.layer2.bufferSizeUnit = 'PDU'
 
 
         if(rtscts):
