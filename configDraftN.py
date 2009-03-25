@@ -27,7 +27,7 @@
 import openwns
 
 import wifimac.support.Transceiver
-from wifimac.lowerMAC.RateAdaptation import Opportunistic, SINR
+from wifimac.lowerMAC.RateAdaptation import OpportunisticwithMIMO, SINRwithMIMO
 
 #######################
 # Simulation parameters
@@ -36,23 +36,23 @@ from wifimac.lowerMAC.RateAdaptation import Opportunistic, SINR
 # on a string, on each end of the string, an AP is positioned
 # Traffic is either DL only or bidirectional
 #
-simTime = 3.5
-settlingTime = 3.0
+simTime = 2.1
+settlingTime = 2.0
 commonLoggerLevel = 1
 dllLoggerLevel = 2
 
 # length of the string
-numMPs = 1
-numSTAs = 3
-numAPs = 2
+numMPs = 0
+numSTAs = 1
+numAPs = 1
 distanceBetweenMPs = 50
 verticalDistanceSTAandMP = 50
 
 # load
 meanPacketSize = 1480 * 8
-offeredDL = 1.0e6
+offeredDL = 50.0e6
 offeredUL = 1.0e6
-ulIsActive = True
+ulIsActive = False
 dlIsActive = True
 startDelayUL = 1.01
 startDelayDL = 1.02
@@ -62,6 +62,10 @@ activeMPs = False
 # Available frequencies for bss and backbone, in MHz
 meshFrequency = 5500
 bssFrequencies = [2400, 2440] #,2480]
+
+# DraftN Configuration
+numAntennas = 3
+maxAggregation = 10
 # End simulation parameters
 ###########################
 
@@ -71,48 +75,49 @@ rtscts = True
 # Node configuration
 
 # configuration class for AP and MP mesh transceivers, with RTS/CTS
-class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
-    def __init__(self, beaconDelay, frequency):
-        super(MyMeshTransceiver, self).__init__(frequency)
-        # changes to the default config
+class MyMeshTransceiver(wifimac.support.Transceiver.DraftN):
+    def __init__(self,  beaconDelay, frequency):
+        super(MyMeshTransceiver, self).__init__(frequency, numAntennas, maxAggregation)
+        self.layer2.beacon.enabled = True
         self.layer2.beacon.delay = beaconDelay
-        self.layer2.bufferSize = 50
-        self.layer2.bufferSizeUnit = 'PDU'
-        self.layer2.ra.raStrategy = SINR()
+
+        self.layer2.ra.raStrategy = SINRwithMIMO()
+
+        #self.layer2.txop.txopLimit = 0.0
+        #self.layer2.rtscts.rtsctsOnTxopData = True
 
         if(rtscts):
             self.layer2.rtsctsThreshold = meanPacketSize/2
         else:
-            self.layer2.rtsctsThreshold = meanPacketSize*2
+            self.layer2.rtsctsThreshold = meanPacketSize*self.layer2.aggregation.maxEntries*2
 
 # configuration class for AP and MP BSS transceivers, without RTS/CTS
-class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
+class MyBSSTransceiver(wifimac.support.Transceiver.DraftN):
     def __init__(self, beaconDelay, frequency):
-        super(MyBSSTransceiver, self).__init__(frequency)
+        super(MyBSSTransceiver, self).__init__(frequency, numAntennas, maxAggregation)
+        self.layer2.beacon.enabled = True
         self.layer2.beacon.delay = beaconDelay
-        self.layer2.ra.raStrategy = Opportunistic()
-        self.layer2.bufferSize = 50
-        self.layer2.bufferSizeUnit = 'PDU'
-
+        #self.layer2.txop.txopLimit = 0.0
+        #self.layer2.rtscts.rtsctsOnTxopData = True
 
         if(rtscts):
             self.layer2.rtsctsThreshold = meanPacketSize/2
         else:
-            self.layer2.rtsctsThreshold = meanPacketSize*2
+            self.layer2.rtsctsThreshold = meanPacketSize*self.layer2.aggregation.maxEntries*2
 
 # configuration class for STAs
-class MySTAConfig(wifimac.support.Transceiver.Station):
+class MySTAConfig(wifimac.support.Transceiver.DraftNStation):
     def __init__(self, initFrequency, position, scanFrequencies, scanDurationPerFrequency):
         super(MySTAConfig, self).__init__(frequency = initFrequency,
                                           position = position,
                                           scanFrequencies = scanFrequencies,
-                                          scanDuration = scanDurationPerFrequency)
-        self.layer2.ra.raStrategy = Opportunistic()
-
+                                          scanDuration = scanDurationPerFrequency,
+                                          numAntennas = numAntennas,
+                                          maxAggregation = maxAggregation)
         if(rtscts):
             self.layer2.rtsctsThreshold = meanPacketSize/2
         else:
-            self.layer2.rtsctsThreshold = meanPacketSize*2
+            self.layer2.rtsctsThreshold = meanPacketSize*self.layer2.aggregation.maxEntries*2
 # End node configuration
 ########################
 

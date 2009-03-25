@@ -2,16 +2,16 @@
 # ---------------------------------------------------------------------------
 # Evaluation: Moments
 # ---------------------------------------------------------------------------
-#  Name: ip.endToEnd.window.incoming.bitThroughput
-#  Description: Throughput (incoming) [bit/s]
+#  Name: ip.endToEnd.window.outgoing.bitThroughput
+#  Description: Throughput (outgoing) [bit/s]
 # ---------------------------------------------------------------------------
 #  Evaluation terminated successfully!
 # ---------------------------------------------------------------------------
 #  Common Statistics 
-#  Minimum: 3060000.0000000
-#  Maximum: 3060000.0000000
-#  Trials: 2
-#  Mean: 3060000.0000000
+#  Minimum: 49608000.0000000
+#  Maximum: 49608000.0000000
+#  Trials: 1
+#  Mean: 49608000.0000000
 # 
 #  Variance: 0.0000000
 #  Relative variance: 0.0000000
@@ -21,9 +21,9 @@
 # 
 #  Skewness: 0.0000000
 # 
-#  2nd moment: 9363600000000.0000000
-#  3rd moment: 28652616000000000000.0000000
+#  2nd moment: 2460953664000000.0000000
+#  3rd moment: 122082989363712004980736.0000000
 # 
-#  Sum of all values: 6120000.0000000
-#  (Sum of all values)^2: 18727200000000.0000000
-#  (Sum of all values)^3: 57305232000000000000.0000000
+#  Sum of all values: 49608000.0000000
+#  (Sum of all values)^2: 2460953664000000.0000000
+#  (Sum of all values)^3: 122082989363712004980736.0000000
