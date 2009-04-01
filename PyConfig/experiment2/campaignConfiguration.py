@@ -26,30 +26,10 @@
 #
 ###############################################################################
 
-import sys
-import os
-
-def searchPathToSDK(path):
-    rootSign = ".thisIsTheRootOfWNS"
-    while rootSign not in os.listdir(path):
-        if path == os.sep:
-            # arrived in root dir
-            return None
-        path, tail = os.path.split(path)
-    return os.path.abspath(path)
-
-pathToSDK = searchPathToSDK(os.path.abspath(os.path.dirname(sys.argv[0])))
-
-if pathToSDK == None:
-    print "Error! You are note within an openWNS-SDK. Giving up"
-    exit(1)
-
-sys.path.append(os.path.join(pathToSDK, "sandbox", "default", "lib", "python2.4", "site-packages"))
-
 # begin example "wifimac.tutorial.experiment2.db.campaignConfiguration.Set"
-from pywns.simdb.Parameters import AutoSimulationParameters, Parameters, Bool, Int, Float, String
-import pywns.simdb.Configuration as config
-import pywns.simdb.Database as db
+from wrowser.simdb.Parameters import AutoSimulationParameters, Parameters, Bool, Int, Float, String
+import wrowser.simdb.Database as db
+import wrowser.Configuration as config
 import subprocess
 
 class Set(AutoSimulationParameters):
@@ -98,13 +78,13 @@ def getTotalThroughput(paramsString, inputName, cursor):
 
 # begin example "wifimac.tutorial.experiment2.db.campaignConfiguration.Cursor"
 conf = config.Configuration()
-conf.read("./.campaign.conf")
+conf.read('.campaign.conf')
 db.Database.connectConf(conf)
 cursor = db.Database.getCursor()
 # end example
 
 # begin example "wifimac.tutorial.experiment2.db.campaignConfiguration.StartBinarySearch"
-params = Set('offeredTraffic', cursor, conf.parser.getint("Campaign", "id"), getTotalThroughput)
+params = Set('offeredTraffic', cursor, conf.campaignId, getTotalThroughput)
 [status, results] = params.binarySearch(maxError = 0.1,
                                         exactness = 0.05,
                                         createSimulations=True,

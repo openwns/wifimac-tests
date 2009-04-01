@@ -25,25 +25,6 @@
 #
 ###############################################################################
 
-# begin example "wifimac.tutorial.experiment1.config.imports"
-import random
-random.seed(22)
-
-import openwns
-from openwns import dB, dBm, fromdB, fromdBm
-from openwns.interval import Interval
-
-import constanze.traffic
-import constanze.node
-
-import wifimac.support
-import wifimac.evaluation.default
-import wifimac.evaluation.ip
-from wifimac.lowerMAC.RateAdaptation import Opportunistic
-
-import rise.Scenario
-# end example
-
 # begin example "wifimac.tutorial.experiment1.config.simulationParameter"
 #######################
 # Simulation parameters
@@ -69,6 +50,25 @@ startDelayDL = 1.02
 networkFrequency = 5500
 # End simulation parameters
 ###########################
+# end example
+
+# begin example "wifimac.tutorial.experiment1.config.imports"
+import random
+random.seed(22)
+
+import openwns
+from openwns import dB, dBm, fromdB, fromdBm
+from openwns.interval import Interval
+
+import constanze.traffic
+import constanze.node
+
+import wifimac.support
+import wifimac.evaluation.default
+import wifimac.evaluation.ip
+from wifimac.lowerMAC.RateAdaptation import Opportunistic
+
+import rise.Scenario
 # end example
 
 # begin example "wifimac.tutorial.experiment1.config.WNS"
@@ -230,6 +230,7 @@ if(ulIsActive):
                                          rang.nl.domainName,
                                          parentLogger=sta.logger)
     sta.load.addTraffic(ipBinding, cbrUL)
+#end example
 
 # begin example "wifimac.tutorial.experiment1.config.NodeCreation.STA.Add"
 # Add STA
