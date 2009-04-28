@@ -52,7 +52,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 runSimulations = True,
                                                 shortDescription = '1AP, 1 STA, overload DL w RTS/CTS',
                                                 requireReferenceOutput = True,
-                                                disabled = (1 not in enabled) or (len(enabled) == 0),
+                                                disabled = (len(enabled) > 0) and (1 not in enabled),
                                                 disabledReason = "Disabled by command-line switch"))
 
 testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
@@ -60,7 +60,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 runSimulations = True,
                                                 shortDescription = '2APs/1MPs network with 3 STAs',
                                                 requireReferenceOutput = True,
-                                                disabled = (2 not in enabled) or (len(enabled) == 0),
+                                                disabled = (len(enabled) > 0) and (2 not in enabled),
                                                 disabledReason = "Disabled by command-line switch"))
 
 testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
@@ -68,7 +68,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 runSimulations = True,
                                                 shortDescription = '1AP/1MP/1STA, MP and STA send/receive traffic',
                                                 requireReferenceOutput = True,
-                                                disabled = (3 not in enabled) or (len(enabled) == 0),
+                                                disabled = (len(enabled) > 0) and (3 not in enabled),
                                                 disabledReason = "Disabled by command-line switch"))
 
 testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
@@ -76,7 +76,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 runSimulations = True,
                                                 shortDescription = '1AP/1STA with DraftN 50Mbit/s',
                                                 requireReferenceOutput = True,
-                                                disabled = (4 not in enabled) or (len(enabled) == 0),
+                                                disabled = (len(enabled) > 0) and (4 not in enabled),
                                                 disabledReason = "Disabled by command-line switch"))
 
 testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
@@ -84,7 +84,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 runSimulations = True,
                                                 shortDescription = 'WiFiMAC-Tutorial: Experiment 1',
                                                 requireReferenceOutput = True,
-                                                disabled = (5 not in enabled) or (len(enabled) == 0),
+                                                disabled = (len(enabled) > 0) and (5 not in enabled),
                                                 disabledReason = "Disabled by command-line switch",
                                                 workingDir = "PyConfig/experiment1"))
 
@@ -93,7 +93,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 runSimulations = True,
                                                 shortDescription = 'WiFiMAC-Tutorial: Experiment 3',
                                                 requireReferenceOutput = True,
-                                                disabled = (6 not in enabled) or (len(enabled) == 0),
+                                                disabled = (len(enabled) > 0) and (6 not in enabled),
                                                 disabledReason = "Disabled by command-line switch",
                                                 workingDir = "PyConfig/experiment3"))
 
@@ -102,7 +102,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 runSimulations = True,
                                                 shortDescription = 'WiFiMAC-Tutorial: Experiment 4',
                                                 requireReferenceOutput = True,
-                                                disabled = (7 not in enabled) or (len(enabled) == 0),
+                                                disabled = (len(enabled) > 0) and (7 not in enabled),
                                                 disabledReason = "Disabled by command-line switch",
                                                 workingDir = "PyConfig/experiment4"))
 
@@ -111,7 +111,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 runSimulations = True,
                                                 shortDescription = 'WiFiMAC-Tutorial: Experiment 5',
                                                 requireReferenceOutput = True,
-                                                disabled = (8 not in enabled) or (len(enabled) == 0),
+                                                disabled = (len(enabled) > 0) and (8 not in enabled),
                                                 disabledReason = "Disabled by command-line switch",
                                                 workingDir = "PyConfig/experiment5"))
 
@@ -120,7 +120,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 runSimulations = True,
                                                 shortDescription = 'WiFiMAC-Tutorial: Experiment 6',
                                                 requireReferenceOutput = True,
-                                                disabled = (9 not in enabled) or (len(enabled) == 0),
+                                                disabled = (len(enabled) > 0) and (9 not in enabled),
                                                 disabledReason = "Disabled by command-line switch",
                                                 workingDir = "PyConfig/experiment6"))
 
@@ -129,7 +129,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 runSimulations = True,
                                                 shortDescription = 'WiFiMAC-Tutorial: Experiment 7',
                                                 requireReferenceOutput = True,
-                                                disabled = (10 not in enabled) or (len(enabled) == 0),
+                                                disabled = (len(enabled) > 0) and (10 not in enabled),
                                                 disabledReason = "Disabled by command-line switch",
                                                 workingDir = "PyConfig/experiment7"))
 if __name__ == '__main__':
