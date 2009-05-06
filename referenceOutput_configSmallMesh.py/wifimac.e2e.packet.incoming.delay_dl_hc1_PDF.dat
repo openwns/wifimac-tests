@@ -9,23 +9,23 @@
 # ---------------------------------------------------------------------------
 #  Common Statistics 
 #  Minimum: 0.0003760
-#  Maximum: 0.0015770
+#  Maximum: 0.0013733
 #  Trials: 84
-#  Mean: 0.0005440
+#  Mean: 0.0005413
 # 
 #  Variance: 0.0000000
-#  Relative variance: 0.1261459
-#  Coefficient of variation: 0.3551702
-#  Standard deviation: 0.0001932
-#  Relative standard deviation: 0.3551702
+#  Relative variance: 0.1147907
+#  Coefficient of variation: 0.3388077
+#  Standard deviation: 0.0001834
+#  Relative standard deviation: 0.3388077
 # 
-#  Skewness: 1.7449986
+#  Skewness: 1.0718081
 # 
 #  2nd moment: 0.0000003
 #  3rd moment: 0.0000000
 # 
-#  Sum of all values: 0.0456978
-#  (Sum of all values)^2: 0.0000280
+#  Sum of all values: 0.0454658
+#  (Sum of all values)^2: 0.0000274
 #  (Sum of all values)^3: 0.0000000
 # -----------------------------------------------------------
 # PDF statistics 
@@ -44,7 +44,7 @@
 #  P05: 0.0000506
 #  P50: 0.0005060
 #  P95: 0.0009614
-#  P99: 0.0010923
+#  P99: 0.0010597
 # -----------------------------------------------------------
 # 
 # x_n                  F(x_n)           G(x_n)     P(x_n-1 < X    n
