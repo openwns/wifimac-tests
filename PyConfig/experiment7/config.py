@@ -87,7 +87,8 @@ class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
         self.layer2.beacon.delay = beaconDelay
 
         # Use IEEE 802.11 DraftN enhancements
-        self.layer2.funTemplate = wifimac.FUNModes.DraftN
+        self.layer2.funTemplate = wifimac.draftn.FUNTemplate
+        self.layer2.phyUser.phyModesDeliverer = wifimac.draftn.PhyModes()
 
         # Block-ACKs are longer than (default) normal ACKs
         self.layer2.expectedACKDuration = 68E-6
@@ -119,7 +120,8 @@ class MySTATransceiver(wifimac.support.Transceiver.Station):
         self.txPower = dBm(20)
 
         # Use IEEE 802.11 DraftN enhancements
-        self.layer2.funTemplate = wifimac.FUNModes.DraftN
+        self.layer2.funTemplate = wifimac.draftn.FUNTemplate
+        self.layer2.phyUser.phyModesDeliverer = wifimac.draftn.PhyModes()
 
         # Block-ACKs are longer than (default) normal ACKs
         self.layer2.expectedACKDuration = 68E-6
