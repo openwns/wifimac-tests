@@ -230,7 +230,7 @@ mpAdrs = []
 
 # begin example "wifimac.tutorial.experiment7.config.NodeCreation.AP"
 # Create AP
-apConfig = wifimac.support.Node(position = openwns.Position(0,0,0))
+apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(0,0,0))
 apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001))
 ap = nc.createAP(idGen, managerPool, apConfig)
 ap.logger.level = commonLoggerLevel
@@ -244,7 +244,7 @@ print "Created AP at (0,0,0) with id ", ap.id, " and addresses ", ap.dll.address
 
 # begin example "wifimac.tutorial.experiment7.config.NodeCreation.MP"
 for i in xrange(numHops-1):
-    mpConfig = wifimac.support.Node(position = openwns.Position((i+1)*distance,0,0))
+    mpConfig = wifimac.support.Node(position = openwns.geometry.position.Position((i+1)*distance,0,0))
     mpConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001+(i+1)*0.001))
     mp = nc.createMP(idGen, managerPool, mpConfig)
     mp.logger.level = commonLoggerLevel
@@ -258,7 +258,7 @@ for i in xrange(numHops-1):
 
 # begin example "wifimac.tutorial.experiment7.config.NodeCreation.STA.node"
 # Create Station
-staConfig = MySTATransceiver(position = openwns.Position(numHops*distance, 0, 0))
+staConfig = MySTATransceiver(position = openwns.geometry.position.Position(numHops*distance, 0, 0))
 sta = nc.createSTA(idGen, managerPool, rang, config = staConfig,
                    loggerLevel = commonLoggerLevel,
                    dllLoggerLevel = dllLoggerLevel)

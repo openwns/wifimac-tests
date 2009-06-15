@@ -195,7 +195,7 @@ apTransceiver.layer2.ra.raStrategy = Constant()
 apTransceiver.layer2.rtsctsThreshold = 8e6
 
 ## Create AP node
-apConfig = wifimac.support.Node(position = openwns.Position(radius, radius, 0))
+apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(radius, radius, 0))
 apConfig.transceivers.append(apTransceiver)
 ap = nc.createAP(idGen, managerPool, apConfig)
 ap.logger.level = commonLoggerLevel
@@ -219,7 +219,7 @@ for s in xrange(numSTAs):
 # end example
 
 # begin example "wifimac.tutorial.experiment3.config.NodeCreation.STAs.loop.node"
-    staConfig = MySTATransceiver(position = openwns.Position(x, y, 0))
+    staConfig = MySTATransceiver(position = openwns.geometry.position.Position(x, y, 0))
     sta = nc.createSTA(idGen, managerPool, rang, config = staConfig,
                        loggerLevel = commonLoggerLevel,
                        dllLoggerLevel = dllLoggerLevel)

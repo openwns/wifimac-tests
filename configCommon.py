@@ -123,7 +123,7 @@ mpAdrs = []
 bssCount = 0
 
 # One AP at the beginning
-apConfig = wifimac.support.Node(position = openwns.Position(distanceBetweenMPs/2, 0, 0))
+apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(distanceBetweenMPs/2, 0, 0))
 apConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001, frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
 apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001, frequency = meshFrequency))
 ap = nc.createAP(idGen = idGen,
@@ -140,7 +140,7 @@ print "Created AP at (", distanceBetweenMPs/2, ", 0, 0) with id ", ap.id, " and 
 # Create MPs
 for i in xrange(numMPs):
     bssCount+=1
-    mpConfig = wifimac.support.Node(position = openwns.Position(distanceBetweenMPs/2+distanceBetweenMPs*(i+1), 0, 0))
+    mpConfig = wifimac.support.Node(position = openwns.geometry.position.Position(distanceBetweenMPs/2+distanceBetweenMPs*(i+1), 0, 0))
     mpConfig.transceivers.append(MyBSSTransceiver(beaconDelay = 0.001*(i+2), frequency = bssFrequencies[bssCount % len(bssFrequencies)]))
     mpConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001*(i+2), frequency = meshFrequency))
     mp = nc.createMP(idGen = idGen,
@@ -239,7 +239,7 @@ for j in xrange(numSTAs):
     staIDs.append(sta.id)
 # End create nodes
 ##################
-
+awe  
 
 #########
 # Probing
