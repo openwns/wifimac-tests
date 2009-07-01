@@ -3,7 +3,7 @@
 # Evaluation: PDF
 # ---------------------------------------------------------------------------
 #  Name: ip.endToEnd.packet.incoming.delay
-#  Description: End-to-End Packet Delay (Uplink) [s]
+#  Description: End-to-End Packet Delay [s]
 # ---------------------------------------------------------------------------
 #  Evaluation terminated successfully!
 # ---------------------------------------------------------------------------
