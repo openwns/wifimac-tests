@@ -45,9 +45,9 @@ if pathToSDK == None:
     exit(1)
 
 # begin example "wifimac.tutorial.experiment7.db.campaignConfiguration.import"
-from pywns.simdb.Parameters import AutoSimulationParameters, Parameters, Bool, Int, Float, String
-import pywns.simdb.Configuration as config
-import pywns.simdb.Database as db
+from wrowser.simdb.Parameters import AutoSimulationParameters, Parameters, Bool, Int, Float, String
+import wrowser.Configuration as config
+import wrowser.simdb.Database as db
 import subprocess
 # end example
 

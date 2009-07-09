@@ -47,9 +47,9 @@ if pathToSDK == None:
 sys.path.append(os.path.join(pathToSDK, "sandbox", "default", "lib", "python2.4", "site-packages"))
 
 # begin example "wifimac.tutorial.experiment2.db.campaignConfiguration.Set"
-from pywns.simdb.Parameters import AutoSimulationParameters, Parameters, Bool, Int, Float, String
-import pywns.simdb.Configuration as config
-import pywns.simdb.Database as db
+from wrowser.simdb.Parameters import AutoSimulationParameters, Parameters, Bool, Int, Float, String
+import wrowser.Configuration as config
+import wrowser.simdb.Database as db
 import subprocess
 
 class Set(AutoSimulationParameters):
