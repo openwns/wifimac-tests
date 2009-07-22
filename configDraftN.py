@@ -66,6 +66,7 @@ bssFrequencies = [2400, 2440] #,2480]
 # DraftN Configuration
 numAntennas = 3
 maxAggregation = 10
+mimoCorrelation = 0.0
 # End simulation parameters
 ###########################
 
@@ -77,7 +78,7 @@ rtscts = True
 # configuration class for AP and MP mesh transceivers, with RTS/CTS
 class MyMeshTransceiver(wifimac.support.Transceiver.DraftN):
     def __init__(self,  beaconDelay, frequency):
-        super(MyMeshTransceiver, self).__init__(frequency, numAntennas, maxAggregation)
+        super(MyMeshTransceiver, self).__init__(frequency, numAntennas, maxAggregation, mimoCorrelation)
         self.layer2.beacon.enabled = True
         self.layer2.beacon.delay = beaconDelay
 
@@ -94,9 +95,10 @@ class MyMeshTransceiver(wifimac.support.Transceiver.DraftN):
 # configuration class for AP and MP BSS transceivers, without RTS/CTS
 class MyBSSTransceiver(wifimac.support.Transceiver.DraftN):
     def __init__(self, beaconDelay, frequency):
-        super(MyBSSTransceiver, self).__init__(frequency, numAntennas, maxAggregation)
+        super(MyBSSTransceiver, self).__init__(frequency, numAntennas, maxAggregation, mimoCorrelation)
         self.layer2.beacon.enabled = True
         self.layer2.beacon.delay = beaconDelay
+        
         #self.layer2.txop.txopLimit = 0.0
         #self.layer2.rtscts.rtsctsOnTxopData = True
 
@@ -113,7 +115,8 @@ class MySTAConfig(wifimac.support.Transceiver.DraftNStation):
                                           scanFrequencies = scanFrequencies,
                                           scanDuration = scanDurationPerFrequency,
                                           numAntennas = numAntennas,
-                                          maxAggregation = maxAggregation)
+                                          maxAggregation = maxAggregation,
+                                          mimoCorrelation = mimoCorrelation)
         if(rtscts):
             self.layer2.rtsctsThreshold = meanPacketSize/2
         else:
