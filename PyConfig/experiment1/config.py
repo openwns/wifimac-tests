@@ -86,7 +86,7 @@ WNS.probesWriteInterval = 3600 # in seconds realTime
 # Create scenario
 sizeX = distance
 sizeY = 10
-scenario = rise.Scenario.Scenario(sizeX, sizeY)
+scenario = rise.Scenario.Scenario(xmin=0,ymin=0,xmax=sizeX, ymax=sizeY)
 
 riseConfig = WNS.modules.rise
 riseConfig.debug.transmitter = (commonLoggerLevel > 1)
@@ -167,7 +167,7 @@ apTransceiver.layer2.ra.raStrategy = Opportunistic()
 apTransceiver.layer2.rtsctsThreshold = 8e6
 
 ## Create AP node
-apConfig = wifimac.support.Node(position = openwns.Position(0,0,0))
+apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(0,0,0))
 apConfig.transceivers.append(apTransceiver)
 ap = nc.createAP(idGen, managerPool, apConfig)
 ap.logger.level = commonLoggerLevel
@@ -183,7 +183,7 @@ print "Created AP at (0,0,0) with id ", ap.id, " and addresses ", ap.dll.address
 # begin example "wifimac.tutorial.experiment1.config.NodeCreation.STA.node"
 # Create Station Transceiver
 staConfig = wifimac.support.Transceiver.Station(frequency = networkFrequency,
-                                                position = openwns.Position(distance, 0, 0),
+                                                position = openwns.geometry.position.Position(distance, 0, 0),
                                                 scanFrequencies = [networkFrequency],
                                                 scanDuration = 0.3)
 # Transmission power

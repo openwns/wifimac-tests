@@ -147,7 +147,7 @@ WNS.probesWriteInterval = 3600 # in seconds realTime
 # Create scenario
 sizeX = (numHops)*distance
 sizeY = 10
-scenario = rise.Scenario.Scenario(sizeX, sizeY)
+scenario = rise.Scenario.Scenario(xmin=0,ymin=0,xmax=sizeX, ymax=sizeY)
 
 riseConfig = WNS.modules.rise
 riseConfig.debug.transmitter = (commonLoggerLevel > 1)
@@ -221,7 +221,7 @@ bssCount = 0
 
 # begin example "wifimac.tutorial.experiment6.config.NodeCreation.AP"
 # Create AP
-apConfig = wifimac.support.Node(position = openwns.Position(0,0,0))
+apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(0,0,0))
 
 # add BSS transceiver first
 apConfig.transceivers.append(
@@ -244,7 +244,7 @@ print "Created AP at (0,0,0) with id ", ap.id, " and addresses ", ap.dll.address
 # begin example "wifimac.tutorial.experiment6.config.NodeCreation.MP"
 for i in xrange(numHops-1):
     bssCount += 1
-    mpConfig = wifimac.support.Node(position = openwns.Position((i+1)*distance,0,0))
+    mpConfig = wifimac.support.Node(position = openwns.geometry.position.Position((i+1)*distance,0,0))
 
     # add BSS transceiver first
     mpConfig.transceivers.append(
@@ -267,7 +267,7 @@ for i in xrange(numHops-1):
 
 # begin example "wifimac.tutorial.experiment6.config.NodeCreation.STA.node"
 # Create Station
-staConfig = MySTATransceiver(position = openwns.Position(numHops*distance, 0, 0),
+staConfig = MySTATransceiver(position = openwns.geometry.position.Position(numHops*distance, 0, 0),
                              scanFrequencies = bssFrequencies)
 sta = nc.createSTA(idGen, managerPool, rang, config = staConfig,
                    loggerLevel = commonLoggerLevel,
