@@ -124,7 +124,7 @@ class MySTATransceiver(wifimac.support.Transceiver.Station):
         self.layer2.phyUser.phyModesDeliverer = wifimac.draftn.PhyModes()
 
         # Block-ACKs are longer than (default) normal ACKs
-        self.layer2.expectedACKDuration = 68E-6
+        self.layer2.maximumACKDuration = 68E-6
 
         # settings for frame aggregation and block acknowledgement
         self.layer2.aggregation.maxEntries = 10
