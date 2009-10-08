@@ -80,7 +80,7 @@ class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
         super(MyBSSTransceiver, self).__init__(frequency)
         self.layer2.beacon.delay = beaconDelay
         self.layer2.rtsctsThreshold = 800#1e6*8
-        self.layer2.txop.txopLimit = 0.01
+        self.layer2.txop.txopLimit = 0.00
 
 # configuration class for STAs
 class MySTAConfig(wifimac.support.Transceiver.Station):
