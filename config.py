@@ -97,3 +97,6 @@ class MySTAConfig(wifimac.support.Transceiver.Station):
 ###########################################
 # Scenario setup etc. is in configCommon.py
 execfile('configCommon.py')
+#Enable Warp2Gui output
+node = openwns.evaluation.createSourceNode(WNS, "wifimac.guiProbe")
+node.appendChildren(openwns.evaluation.generators.TextTrace("wifimac.guiText", ""))
