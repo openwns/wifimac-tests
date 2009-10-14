@@ -1,17 +1,17 @@
         WNS
        =====
-                 Status: Simulation is still running
-                     Start: Wed Oct 14 17:03:43 2009
-                       Now: Wed Oct 14 17:03:43 2009
-                  Duration:             0:00:00
+                 Status: Simulation terminated successfully
+                     Start: Wed Oct 14 16:38:40 2009
+                       Now: Wed Oct 14 16:40:00 2009
+                  Duration:             0:01:20
 
-              Simulation time: 0
-         Max. simulation time: 2.1
+              Simulation time: 2.11
+         Max. simulation time: 2.11
 
 
 Debug output
 ----------------------------------------------------------
-Max number of PDUs:     0
+Max number of PDUs:     76
 Current number of PDUs: 0
 
 
@@ -19,31 +19,31 @@ The following output is read from /proc/self/status
 ----------------------------------------------------------
 Name:	openwns
 State:	R (running)
-Tgid:	22949
-Pid:	22949
-PPid:	22948
+Tgid:	5376
+Pid:	5376
+PPid:	5375
 TracerPid:	0
 Uid:	2474	2474	2474	2474
 Gid:	1348	1348	1348	1348
 FDSize:	32
 Groups:	1000 1002 1278 1332 1337 1348 7031 65535 
-VmPeak:	   88664 kB
-VmSize:	   88664 kB
+VmPeak:	   93148 kB
+VmSize:	   93148 kB
 VmLck:	       0 kB
-VmHWM:	   37380 kB
-VmRSS:	   37380 kB
-VmData:	   23556 kB
+VmHWM:	   43880 kB
+VmRSS:	   43880 kB
+VmData:	   28040 kB
 VmStk:	     244 kB
 VmExe:	      16 kB
 VmLib:	   62284 kB
-VmPTE:	     148 kB
-Threads:	3
+VmPTE:	     164 kB
+Threads:	2
 SigQ:	0/131072
 SigPnd:	0000000000000000
 ShdPnd:	0000000000000000
 SigBlk:	0000000000000000
 SigIgn:	0000000001001000
-SigCgt:	0000000180800422
+SigCgt:	0000000180000422
 CapInh:	0000000000000000
 CapPrm:	0000000000000000
 CapEff:	0000000000000000
@@ -52,5 +52,5 @@ Cpus_allowed:	00000000,000000ff
 Cpus_allowed_list:	0-7
 Mems_allowed:	1
 Mems_allowed_list:	0
-voluntary_ctxt_switches:	630
-nonvoluntary_ctxt_switches:	13
+voluntary_ctxt_switches:	921
+nonvoluntary_ctxt_switches:	2538
