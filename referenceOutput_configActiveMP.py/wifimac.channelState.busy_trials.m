@@ -1,0 +1,14 @@
+% This table contains the trials of: wifimac.channelState.busy
+% 
+% Dimensions:
+% 
+% Dim 1: 'MAC.TransceiverAddress'
+% 
+% 1. Column: MAC.TransceiverAddress
+% 2. Column: value
+
+1	6
+2	6
+3	6
+4	6
+5	6
