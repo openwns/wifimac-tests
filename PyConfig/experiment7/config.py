@@ -77,31 +77,17 @@ networkFrequency = 5500
 # Node configuration
 
 # configuration class for AP and MP BSS transceivers
-class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
+class MyMeshTransceiver(wifimac.support.Transceiver.DraftNMesh):
     def __init__(self, beaconDelay):
-        super(MyMeshTransceiver, self).__init__(frequency = networkFrequency)
+        super(MyMeshTransceiver, self).__init__(frequency = networkFrequency,
+                                                numAntennas = 3,
+                                                maxAggregation = 10)
 
         # Transmission power
         self.txPower = dBm(20)
+
         # set the inital start delay of the beacon so that beacons from multiple APs do not collide
         self.layer2.beacon.delay = beaconDelay
-
-        # Use IEEE 802.11 DraftN enhancements
-        self.layer2.funTemplate = wifimac.draftn.FUNTemplate
-        self.layer2.phyUser.phyModesDeliverer = wifimac.draftn.PhyModes()
-
-        # Block-ACKs are longer than (default) normal ACKs
-        self.layer2.expectedACKDuration = 68E-6
-
-        # settings for frame aggregation and block acknowledgement
-        self.layer2.aggregation.maxEntries = 10
-        self.layer2.blockACK.maxOnAir = 10
-
-        # number of antennas for MIMO transmissions
-        self.layer2.manager.numAntennas = 3
-
-        # rate adaptation uses MIMO transmissions if possible
-        self.layer2.ra.raStrategy = SINRwithMIMO()
 
         # For frames above this threshold (in bit) RTS/CTS will be used
         self.layer2.rtsctsThreshold = 8e6
@@ -109,33 +95,17 @@ class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
 
 # begin example "wifimac.tutorial.experiment7.nodeConfig.STA"
 # configuration class for STAs
-class MySTATransceiver(wifimac.support.Transceiver.Station):
+class MySTATransceiver(wifimac.support.Transceiver.DraftNStation):
     def __init__(self, position):
         super(MySTATransceiver, self).__init__(frequency = networkFrequency,
                                                position = position,
                                                scanFrequencies = [networkFrequency],
-                                               scanDuration = 0.3)
+                                               scanDuration = 0.3,
+                                               numAntennas = 1,
+                                               maxAggregation = 10)
 
         # Transmission power
         self.txPower = dBm(20)
-
-        # Use IEEE 802.11 DraftN enhancements
-        self.layer2.funTemplate = wifimac.draftn.FUNTemplate
-        self.layer2.phyUser.phyModesDeliverer = wifimac.draftn.PhyModes()
-
-        # Block-ACKs are longer than (default) normal ACKs
-        self.layer2.maximumACKDuration = 68E-6
-
-        # settings for frame aggregation and block acknowledgement
-        self.layer2.aggregation.maxEntries = 10
-        self.layer2.blockACK.maxOnAir = 10
-
-        # number of antennas for MIMO transmissions
-        self.layer2.manager.numAntennas = 1
-
-        # rate adaptation strategy: STAs do not have link quality
-        # feedback, hence no SINR-based rate adaptation
-        self.layer2.ra.raStrategy = Opportunistic()
 
         # For frames above this threshold (in bit) RTS/CTS will be used
         self.layer2.rtsctsThreshold = 8e6

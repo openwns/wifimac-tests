@@ -38,7 +38,7 @@ import constanze.node
 import wifimac.support
 import wifimac.evaluation.default
 import wifimac.evaluation.ip
-import wifimac.convergence.PhyMode  # jen: added
+import wifimac.convergence.PhyMode
 from wifimac.lowerMAC.RateAdaptation import Opportunistic, Constant
 
 import rise.Scenario
@@ -200,7 +200,7 @@ WNS.simulationModel.nodes.append(ap)
 apIDs.append(ap.id)
 apAdrs.extend(ap.dll.addresses)
 rang.dll.addAP(ap)
-print "Created AP at (", radius, ", ", radius, ", 0) with id ", ap.id, " and addresses ", ap.dll.addresses
+print "Created AP at (0,0,0) with id ", ap.id, " and addresses ", ap.dll.addresses
 
 # All STAs have to have the same position to avoid successful reception on collisions
 for s in xrange(numSTAs):
@@ -224,7 +224,7 @@ for s in xrange(numSTAs):
     # Add STA
     WNS.simulationModel.nodes.append(sta)
     staIDs.append(sta.id)
-    print "Created STA at (", x, ", ", y, ", 0) with id ", sta.id
+    print "Created STA at (", distance, ", 0, 0) with id ", sta.id
 # End create nodes
 ##################
 
