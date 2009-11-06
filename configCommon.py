@@ -251,8 +251,8 @@ wifimac.evaluation.default.installEvaluation(WNS,
                                              apAdrs, mpAdrs, staIDs,
                                              maxHopCount = numMPs+1,
                                              performanceProbes = True,
-                                             networkProbes = False,
-                                             draftNProbes = False)
+                                             networkProbes = True,
+                                             draftNProbes = issubclass(MySTAConfig, wifimac.support.Transceiver.DraftNStation))
 
 wifimac.evaluation.ip.installEvaluation(sim = WNS,
                                         staIds = staIDs,

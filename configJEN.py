@@ -46,18 +46,19 @@ import rise.Scenario
 #######################
 # Simulation parameters
 #
-simTime = 2.11
+simTime = 1.01
 settlingTime = 1.1
+simTime += settlingTime
 commonLoggerLevel = 1
 dllLoggerLevel = 2
 
-numSTAs = 2
-radius = 5.0
+numSTAs = 3
+distance = 5.0
 
-# load
-packetSize = (2000-20)*8#params.packetSize
-offered = 50e6
-startDelay = 1.01
+# load (IP Header size is set to 0)
+packetSize = 1000*8
+offered = 20e6/float(numSTAs)
+startDelay = 1.00
 
 # Frequencies
 networkFrequency = 5500
@@ -76,19 +77,28 @@ class MySTATransceiver(wifimac.support.Transceiver.Station):
                                                scanDuration = 0.3)
 
         # Transmission power
-        self.txPower = dBm(25) #jen: 20
+        self.txPower = dBm(20)
 
         # rate adaptation strategy: None, constant BPSK 1/2
-        self.layer2.ra.raStrategy = Constant(wifimac.convergence.PhyMode.makeBasicPhyMode("QAM64", "3/4", dB(24.8))) #jen: Constant()
+        self.layer2.ra.raStrategy = Constant(wifimac.convergence.PhyMode.makeBasicPhyMode("BPSK", "1/2", dB(6.0)))
 
         # For frames above this threshold (in bit) RTS/CTS will be used
-        self.layer2.rtsctsThreshold = 1 #jen: 8e6
+        self.layer2.rtsctsThreshold = 1
 
-        # Deactivate retransmissions
-        self.layer2.arq.longRetryLimit = 0
-        self.layer2.arq.shortRetryLimit = 0
-        # Set the contention window to a minimum
-        self.layer2.unicastDCF.cwMin = 7
+        # we change the timeouts of the standard so that 100% synchronization of the STAs is assured
+        self.layer2.ackTimeout = self.layer2.sifsDuration + self.layer2.maximumACKDuration + self.layer2.slotDuration
+        self.layer2.ctsTimeout = self.layer2.sifsDuration + self.layer2.maximumCTSDuration + self.layer2.slotDuration
+
+        # we change the behavior of the frameSync so that EIFS will be done although the frame could not be indentified as one
+        self.layer2.frameSynchronization.signalRxErrorAlthoughNotSynchronized = True
+
+        self.layer2.arq.longRetryLimit = 7
+        self.layer2.arq.shortRetryLimit = 7
+        self.layer2.unicastDCF.cwMin = 15
+        self.layer2.unicastDCF.cwMax = 1031
+
+        # disable broadcast BO
+        self.layer2.broadcastDCF.backoffDisabled = True
 # End node configuration
 ########################
 
@@ -104,9 +114,7 @@ WNS.probesWriteInterval = 3600 # in seconds realTime
 
 #################
 # Create scenario
-sizeX = radius * 2
-sizeY = radius * 2
-scenario = rise.Scenario.Scenario(xmin=0,ymin=0,xmax=sizeX, ymax=sizeY)
+scenario = rise.Scenario.Scenario(xmin=0,ymin=0,xmax=distance, ymax=1)
 
 riseConfig = WNS.modules.rise
 riseConfig.debug.transmitter = (commonLoggerLevel > 1)
@@ -133,8 +141,8 @@ myPathloss = rise.scenario.Pathloss.PyFunction(
     outOfMinRange = rise.scenario.Pathloss.Constant("42 dB"),
     outOfMaxRange = rise.scenario.Pathloss.Deny(),
     scenarioWrap = False,
-    sizeX = sizeX,
-    sizeY = sizeY)
+    sizeX = distance,
+    sizeY = 1)
 myShadowing = rise.scenario.Shadowing.No()
 myFastFading = rise.scenario.FastFading.No()
 propagationConfig = rise.scenario.Propagation.Configuration(
@@ -176,14 +184,14 @@ apTransceiver.txPower = dBm(25) #jen: 20
 # from multiple APs do not collide
 apTransceiver.layer2.beacon.delay = 0.001
 # rate adaptation strategy: Constant with default BPSK 1/2
-apTransceiver.layer2.ra.raStrategy = Constant(wifimac.convergence.PhyMode.makeBasicPhyMode("QAM64", "3/4", dB(24.8))) #jen: Constant()
+apTransceiver.layer2.ra.raStrategy =  Constant(wifimac.convergence.PhyMode.makeBasicPhyMode("BPSK", "1/2", dB(6.0)))
 # For frames above this threshold (in bit) RTS/CTS will be used
-apTransceiver.layer2.rtsctsThreshold = 1; #jen: 8e6
-
-apTransceiver.layer2.beacon.period = simTime * 2 # jen: avoid beacons
+apTransceiver.layer2.rtsctsThreshold = 1;
+# No beacons are transmitted after the first one
+apTransceiver.layer2.beacon.period = simTime * 2
 
 ## Create AP node
-apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(radius, radius, 0))
+apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(0, 0, 0))
 apConfig.transceivers.append(apTransceiver)
 ap = nc.createAP(idGen, managerPool, apConfig)
 ap.logger.level = commonLoggerLevel
@@ -194,19 +202,17 @@ apAdrs.extend(ap.dll.addresses)
 rang.dll.addAP(ap)
 print "Created AP at (", radius, ", ", radius, ", 0) with id ", ap.id, " and addresses ", ap.dll.addresses
 
-# Create STAs in circle around AP
-from math import sin, cos, pi
-
+# All STAs have to have the same position to avoid successful reception on collisions
 for s in xrange(numSTAs):
-    x = radius + radius * cos(float(s)/numSTAs*2*pi)
-    y = radius + radius * sin(float(s)/numSTAs*2*pi)
-
-    staConfig = MySTATransceiver(position = openwns.geometry.position.Position(x, y, 0))
+    staConfig = MySTATransceiver(position = openwns.geometry.position.Position(distance, 0, 0))
     sta = nc.createSTA(idGen, managerPool, rang, config = staConfig,
                        loggerLevel = commonLoggerLevel,
                        dllLoggerLevel = dllLoggerLevel)
 
-    ul    = constanze.traffic.Poisson(startDelay+random.random()*0.001,
+    # Set ip header size to zero
+    sta.nl.ipHeader.config.headerSize = 0
+
+    ul    = constanze.traffic.Poisson(startDelay+random.random()*0.1,
                                       offered,
                                       packetSize,
                                       parentLogger=sta.logger)
@@ -226,11 +232,40 @@ for s in xrange(numSTAs):
 # Probing
 from openwns.evaluation import *
 
+# Head of line packet service time (w/o final SIFS and ACK)
 node = openwns.evaluation.createSourceNode(WNS, 'wifimac.hol.packet.incoming.delay')
 n = node.appendChildren(SettlingTimeGuard(settlingTime))
 n.appendChildren(PDF(minXValue = 0.0, maxXValue = 0.001, resolution=1000,
                      name = "wifimac.hol.packet.delay.detail",
                      description = "Packet service time [s]"))
 
+# System throughput
+node = openwns.evaluation.createSourceNode(WNS, 'ip.endToEnd.window.incoming.bitThroughput')
+node = node.appendChildren(SettlingTimeGuard(settlingTime))
+node = node.appendChildren(Accept(by = 'wns.node.Node.id', ifIn = [rang.nodeID]))
+node = node.appendChildren(Moments(name = 'ip.endToEnd.window.incoming.bitThroughput',
+                                   description = "UL Throughput [bit/s]"))
+node = node.appendChildren(TimeSeries(name = 'ip.endToEnd.window.incoming.bitThroughput',
+                                      description = "UL Throughput [bit/s]"))
+
+
+## debugging probes, activate if required
+#node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.msduSuccessRate')
+#node = node.appendChildren(Accept(by = 'MAC.CompoundIsForMe', ifIn = [1]))
+#node = node.appendChildren(Accept(by = 'MAC.CompoundIsUnicast', ifIn = [1]))
+#node = node.appendChildren(SettlingTimeGuard(settlingTime))
+#node = node.appendChildren(Moments(name = 'wifimac.linkQuality.msduSuccessRate',
+#                                   description = "MSDU Success Rate"))
+
+#node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.rtsSuccess')
+#node = node.appendChildren(SettlingTimeGuard(settlingTime))
+#node = node.appendChildren(Moments(name = 'wifimac.linkQuality.rtsSuccess',
+#                                   description = "RTS Success Rate"))
+
+#node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.numTxAttempts')
+#node = node.appendChildren(SettlingTimeGuard(settlingTime))
+#node.appendChildren(PDF(minXValue = 0.0, maxXValue = 100, resolution=1000,
+#                        name = "wifimac.linkQuality.numTxAttempts",
+#                        description = "Number of Tx Attempts"))
 
 openwns.setSimulator(WNS)
