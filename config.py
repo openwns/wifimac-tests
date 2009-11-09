@@ -80,7 +80,7 @@ class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
         super(MyBSSTransceiver, self).__init__(frequency)
         self.layer2.beacon.delay = beaconDelay
         self.layer2.rtsctsThreshold = 800#1e6*8
-        self.layer2.txop.txopLimit = 0.01
+        self.layer2.txop.txopLimit = 0.00
 
 # configuration class for STAs
 class MySTAConfig(wifimac.support.Transceiver.Station):
@@ -91,9 +91,25 @@ class MySTAConfig(wifimac.support.Transceiver.Station):
                                           scanDuration = scanDurationPerFrequency)
         self.layer2.rtsctsThreshold = 800#1e6*8
 
+        #self.probeWindow = simTime - 0.1 - settlingTime
+
 # End node configuration
 ########################
 
 ###########################################
 # Scenario setup etc. is in configCommon.py
 execfile('configCommon.py')
+#Enable Warp2Gui output
+node = openwns.evaluation.createSourceNode(WNS, "wifimac.guiProbe")
+node.appendChildren(openwns.evaluation.generators.TextTrace("wifimac.guiText", ""))
+
+
+node = openwns.evaluation.getSourceNode(WNS, 'ip.endToEnd.window.incoming.bitThroughput')
+node = node.appendChildren(wifimac.evaluation.default.SettlingTimeGuard(settlingTime))
+node = node.appendChildren(wifimac.evaluation.default.Logger())
+node = node.appendChildren(openwns.evaluation.Accept(by = 'MAC.Id', ifIn = staIDs, suffix='STAs'))
+node.appendChildren(openwns.evaluation.PDF(minXValue = 0.0, maxXValue = offeredDL*2, resolution = 1000,
+                                           name = 'ip.endToEnd.incoming.bitThroughput',
+                                           description = 'Throughput [Mb/s]'))
+node.appendChildren(openwns.evaluation.TimeSeries(name = 'ip.endToEnd.window.incoming.bitThroughput',
+                                                  description = "Throughput"))

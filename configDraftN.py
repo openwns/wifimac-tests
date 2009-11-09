@@ -76,16 +76,10 @@ rtscts = True
 # Node configuration
 
 # configuration class for AP and MP mesh transceivers, with RTS/CTS
-class MyMeshTransceiver(wifimac.support.Transceiver.DraftN):
+class MyMeshTransceiver(wifimac.support.Transceiver.DraftNMesh):
     def __init__(self,  beaconDelay, frequency):
         super(MyMeshTransceiver, self).__init__(frequency, numAntennas, maxAggregation, mimoCorrelation)
-        self.layer2.beacon.enabled = True
         self.layer2.beacon.delay = beaconDelay
-
-        self.layer2.ra.raStrategy = SINRwithMIMO()
-
-        #self.layer2.txop.txopLimit = 0.0
-        #self.layer2.rtscts.rtsctsOnTxopData = True
 
         if(rtscts):
             self.layer2.rtsctsThreshold = meanPacketSize/2
@@ -98,7 +92,7 @@ class MyBSSTransceiver(wifimac.support.Transceiver.DraftN):
         super(MyBSSTransceiver, self).__init__(frequency, numAntennas, maxAggregation, mimoCorrelation)
         self.layer2.beacon.enabled = True
         self.layer2.beacon.delay = beaconDelay
-        
+
         #self.layer2.txop.txopLimit = 0.0
         #self.layer2.rtscts.rtsctsOnTxopData = True
 
@@ -117,6 +111,7 @@ class MySTAConfig(wifimac.support.Transceiver.DraftNStation):
                                           numAntennas = numAntennas,
                                           maxAggregation = maxAggregation,
                                           mimoCorrelation = mimoCorrelation)
+
         if(rtscts):
             self.layer2.rtsctsThreshold = meanPacketSize/2
         else:
