@@ -1,0 +1,29 @@
+#  PROBE RESULTS (THIS IS A MAGIC LINE)
+# ---------------------------------------------------------------------------
+# Evaluation: Moments
+# ---------------------------------------------------------------------------
+#  Name: wifimac.linkQuality.msduSuccessRate
+#  Description: MSDU Success Rate
+# ---------------------------------------------------------------------------
+#  Evaluation terminated successfully!
+# ---------------------------------------------------------------------------
+#  Common Statistics 
+#  Minimum: 0.0000000
+#  Maximum: 1.0000000
+#  Trials: 2756
+#  Mean: 0.8621190
+# 
+#  Variance: 0.1189130
+#  Relative variance: 0.1599907
+#  Coefficient of variation: 0.3999884
+#  Standard deviation: 0.3448376
+#  Relative standard deviation: 0.3999884
+# 
+#  Skewness: -2.0994673
+# 
+#  2nd moment: 0.8621190
+#  3rd moment: 0.8621190
+# 
+#  Sum of all values: 2376.0000000
+#  (Sum of all values)^2: 2376.0000000
+#  (Sum of all values)^3: 2376.0000000

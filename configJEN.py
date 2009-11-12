@@ -52,7 +52,7 @@ simTime += settlingTime
 commonLoggerLevel = 1
 dllLoggerLevel = 2
 
-numSTAs = 3
+numSTAs = 10
 distance = 5.0
 
 # load (IP Header size is set to 0)
@@ -88,6 +88,9 @@ class MySTATransceiver(wifimac.support.Transceiver.Station):
         # we change the timeouts of the standard so that 100% synchronization of the STAs is assured
         self.layer2.ackTimeout = self.layer2.sifsDuration + self.layer2.maximumACKDuration + self.layer2.slotDuration
         self.layer2.ctsTimeout = self.layer2.sifsDuration + self.layer2.maximumCTSDuration + self.layer2.slotDuration
+
+        # the retry counter (and thus the cw) is reseted for every compound
+        self.layer2.arq.bianchiRetryCounter = True
 
         # we change the behavior of the frameSync so that EIFS will be done although the frame could not be indentified as one
         self.layer2.frameSynchronization.signalRxErrorAlthoughNotSynchronized = True
@@ -249,23 +252,23 @@ node = node.appendChildren(TimeSeries(name = 'ip.endToEnd.window.incoming.bitThr
                                       description = "UL Throughput [bit/s]"))
 
 
-## debugging probes, activate if required
-#node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.msduSuccessRate')
-#node = node.appendChildren(Accept(by = 'MAC.CompoundIsForMe', ifIn = [1]))
-#node = node.appendChildren(Accept(by = 'MAC.CompoundIsUnicast', ifIn = [1]))
-#node = node.appendChildren(SettlingTimeGuard(settlingTime))
-#node = node.appendChildren(Moments(name = 'wifimac.linkQuality.msduSuccessRate',
-#                                   description = "MSDU Success Rate"))
+# debugging probes, activate if required
+node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.msduSuccessRate')
+node = node.appendChildren(Accept(by = 'MAC.CompoundIsForMe', ifIn = [1]))
+node = node.appendChildren(Accept(by = 'MAC.CompoundIsUnicast', ifIn = [1]))
+node = node.appendChildren(SettlingTimeGuard(settlingTime))
+node = node.appendChildren(Moments(name = 'wifimac.linkQuality.msduSuccessRate',
+                                   description = "MSDU Success Rate"))
 
-#node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.rtsSuccess')
-#node = node.appendChildren(SettlingTimeGuard(settlingTime))
-#node = node.appendChildren(Moments(name = 'wifimac.linkQuality.rtsSuccess',
-#                                   description = "RTS Success Rate"))
+node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.rtsSuccess')
+node = node.appendChildren(SettlingTimeGuard(settlingTime))
+node = node.appendChildren(Moments(name = 'wifimac.linkQuality.rtsSuccess',
+                                   description = "RTS Success Rate"))
 
-#node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.numTxAttempts')
-#node = node.appendChildren(SettlingTimeGuard(settlingTime))
-#node.appendChildren(PDF(minXValue = 0.0, maxXValue = 100, resolution=1000,
-#                        name = "wifimac.linkQuality.numTxAttempts",
-#                        description = "Number of Tx Attempts"))
+node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.numTxAttempts')
+node = node.appendChildren(SettlingTimeGuard(settlingTime))
+node.appendChildren(PDF(minXValue = 0.0, maxXValue = 100, resolution=1000,
+                        name = "wifimac.linkQuality.numTxAttempts",
+                        description = "Number of Tx Attempts"))
 
 openwns.setSimulator(WNS)
