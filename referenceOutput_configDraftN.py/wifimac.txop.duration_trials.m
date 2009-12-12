@@ -7,4 +7,4 @@
 % 1. Column: MAC.TransceiverAddress
 % 2. Column: value
 
-1	164
+1	156
