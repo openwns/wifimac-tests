@@ -122,7 +122,7 @@ WNS.probesWriteInterval = 3600 # in seconds realTime
 # Create scenario
 sizeX = 15
 sizeY = 15
-scenario = rise.Scenario.Scenario(xmin=0,ymin=0,xmax=sizeX, ymax=sizeY)
+scenario = rise.Scenario.Scenario()
 
 riseConfig = WNS.modules.rise
 riseConfig.debug.transmitter = (commonLoggerLevel > 1)
@@ -164,7 +164,8 @@ myPathloss = rise.scenario.Pathloss.PyFunction(
 myShadowing = rise.scenario.Shadowing.Objects(obstructionList = objs,
                                               xGridBlocks = 1,
                                               yGridBlocks = 1,
-                                              scenario = scenario)
+                                              sizeX = sizeX,
+                                              sizeY = sizeY)
 myFastFading = rise.scenario.FastFading.No()
 propagationConfig = rise.scenario.Propagation.Configuration(
     pathloss = myPathloss,
