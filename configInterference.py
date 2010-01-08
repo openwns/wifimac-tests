@@ -50,7 +50,7 @@ class Params:
 
 params = Params()
 
-simTime = 0.1
+simTime =  0.1
 settlingTime = 2.0
 commonLoggerLevel = 1
 dllLoggerLevel = 2
@@ -141,13 +141,21 @@ managerPool = wifimac.support.ChannelManagerPool(scenario = scenario,
 objs = []
 wallAttenuation = dB(params.wallAttenuation)
 if(params.wall13):
-    objs.append(rise.scenario.Shadowing.Shape2D(pointA = [0.0, 6.0, 0.0], pointB = [2.0, 6.0, 0.0], attenuation = wallAttenuation))
+    objs.append(rise.scenario.Shadowing.LineSegment(rise.scenario.Shadowing.Point(0.0, 6.0, 0.0),
+                                                    rise.scenario.Shadowing.Point(2.0, 6.0, 0.0),
+                                                    attenuation = wallAttenuation))
 if(params.wall24):
-    objs.append(rise.scenario.Shadowing.Shape2D(pointA = [10.0, 6.0, 0.0], pointB = [12.0, 6.0, 0.0], attenuation = wallAttenuation))
+    objs.append(rise.scenario.Shadowing.LineSegment(rise.scenario.Shadowing.Point(10.0, 6.0, 0.0),
+                                                    rise.scenario.Shadowing.Point(12.0, 6.0, 0.0),
+                                                    attenuation = wallAttenuation))
 if(params.wall23):
-    objs.append(rise.scenario.Shadowing.Shape2D(pointA = [8.0, 2.0, 0.0], pointB = [10.0, 4.0, 0.0], attenuation = wallAttenuation))
+    objs.append(rise.scenario.Shadowing.LineSegment(rise.scenario.Shadowing.Point(8.0, 2.0, 0.0),
+                                                    rise.scenario.Shadowing.Point(10.0, 4.0, 0.0),
+                                                    attenuation = wallAttenuation))
 if(params.wall14):
-    objs.append(rise.scenario.Shadowing.Shape2D(pointA = [4.0, 2.0, 0.0], pointB = [2.0, 4.0, 0.0], attenuation = wallAttenuation))
+    objs.append(rise.scenario.Shadowing.LineSegment(rise.scenario.Shadowing.Point(4.0, 2.0, 0.0),
+                                                    rise.scenario.Shadowing.Point(2.0, 4.0, 0.0),
+                                                    attenuation = wallAttenuation))
 myPathloss = rise.scenario.Pathloss.PyFunction(
     validFrequencies = Interval(2000, 6000),
     validDistances = Interval(2, 5000), #[m]
@@ -161,11 +169,7 @@ myPathloss = rise.scenario.Pathloss.PyFunction(
     scenarioWrap = False,
     sizeX = sizeX,
     sizeY = sizeY)
-myShadowing = rise.scenario.Shadowing.Objects(obstructionList = objs,
-                                              xGridBlocks = 1,
-                                              yGridBlocks = 1,
-                                              sizeX = sizeX,
-                                              sizeY = sizeY)
+myShadowing = rise.scenario.Shadowing.Objects(obstructionList = objs)
 myFastFading = rise.scenario.FastFading.No()
 propagationConfig = rise.scenario.Propagation.Configuration(
     pathloss = myPathloss,

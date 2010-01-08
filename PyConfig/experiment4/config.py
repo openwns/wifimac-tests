@@ -144,7 +144,10 @@ managerPool = wifimac.support.ChannelManagerPool(scenario = scenario,
 # begin example "wifimac.tutorial.experiment4.config.scenario.createWallObj"
 # single wall from (0,5) to (wallLength,5)
 objs = []
-objs.append(rise.scenario.Shadowing.Shape2D(pointA = [0.0, 5.0, 0.0], pointB = [wallLength, 5.0, 0.0], attenuation = dB(100)))
+objs.append(rise.scenario.Shadowing.LineSegment(
+        rise.scenario.Shadowing.Point(0.0, 5.0, 0.0),
+        rise.scenario.Shadowing.Point(wallLength, 5.0, 0.0),
+        attenuation = dB(100)))
 # End create scenario
 #####################
 # end example
@@ -165,11 +168,7 @@ myPathloss = rise.scenario.Pathloss.PyFunction(
     scenarioWrap = False,
     sizeX = sizeX,
     sizeY = sizeY)
-myShadowing = rise.scenario.Shadowing.Objects(obstructionList = objs,
-                                              xGridBlocks = 1,
-                                              yGridBlocks = 1,
-                                              sizeX = sizeX,
-                                              sizeY = sizeY)
+myShadowing = rise.scenario.Shadowing.Objects(obstructionList = objs)
 myFastFading = rise.scenario.FastFading.No()
 propagationConfig = rise.scenario.Propagation.Configuration(
     pathloss = myPathloss,
