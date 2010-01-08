@@ -186,12 +186,12 @@ apTransceiver.txPower = dBm(25) #jen: 20
 # set the inital start delay of the beacon so that beacons
 # from multiple APs do not collide
 apTransceiver.layer2.beacon.delay = 0.001
+# No beacons shall be transmitted after the first one
+apTransceiver.layer2.beacon.period = simTime * 2
 # rate adaptation strategy: Constant with default BPSK 1/2
 apTransceiver.layer2.ra.raStrategy =  Constant(wifimac.convergence.PhyMode.makeBasicPhyMode("BPSK", "1/2", dB(6.0)))
 # For frames above this threshold (in bit) RTS/CTS will be used
 apTransceiver.layer2.rtsctsThreshold = 1;
-# No beacons are transmitted after the first one
-apTransceiver.layer2.beacon.period = simTime * 2
 
 ## Create AP node
 apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(0, 0, 0))

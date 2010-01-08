@@ -80,7 +80,7 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 disabledReason = "Disabled by command-line switch"))
 
 testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
-                                                configFile = 'configJEN.py',
+                                                configFile = 'configBianchi.py',
                                                 runSimulations = True,
                                                 shortDescription = 'Bianchi Model setup',
                                                 requireReferenceOutput = True,
