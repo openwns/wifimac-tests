@@ -43,9 +43,9 @@ class Params:
     raStrategy = "Constant"
     rtscts = True
     wallAttenuation = 100
-    wall13 = False
+    wall13 = True
     wall14 = False
-    wall23 = False
+    wall23 = True
     wall24 = False
 
 params = Params()
@@ -95,7 +95,7 @@ import dll
 
 import openwns
 import openwns.logger
-import openwns.geometry.position
+from openwns.geometry import Position
 from openwns import dB, dBm, fromdB, fromdBm
 from openwns.interval import Interval
 
@@ -141,20 +141,20 @@ managerPool = wifimac.support.ChannelManagerPool(scenario = scenario,
 objs = []
 wallAttenuation = dB(params.wallAttenuation)
 if(params.wall13):
-    objs.append(rise.scenario.Shadowing.LineSegment(rise.scenario.Shadowing.Point(0.0, 6.0, 0.0),
-                                                    rise.scenario.Shadowing.Point(2.0, 6.0, 0.0),
+    objs.append(rise.scenario.Shadowing.LineSegment(Position(0.0, 6.0, 0.0),
+                                                    Position(2.0, 6.0, 0.0),
                                                     attenuation = wallAttenuation))
 if(params.wall24):
-    objs.append(rise.scenario.Shadowing.LineSegment(rise.scenario.Shadowing.Point(10.0, 6.0, 0.0),
-                                                    rise.scenario.Shadowing.Point(12.0, 6.0, 0.0),
+    objs.append(rise.scenario.Shadowing.LineSegment(Position(10.0, 6.0, 0.0),
+                                                    Position(12.0, 6.0, 0.0),
                                                     attenuation = wallAttenuation))
 if(params.wall23):
-    objs.append(rise.scenario.Shadowing.LineSegment(rise.scenario.Shadowing.Point(8.0, 2.0, 0.0),
-                                                    rise.scenario.Shadowing.Point(10.0, 4.0, 0.0),
+    objs.append(rise.scenario.Shadowing.LineSegment(Position(8.0, 2.0, 0.0),
+                                                    Position(10.0, 4.0, 0.0),
                                                     attenuation = wallAttenuation))
 if(params.wall14):
-    objs.append(rise.scenario.Shadowing.LineSegment(rise.scenario.Shadowing.Point(4.0, 2.0, 0.0),
-                                                    rise.scenario.Shadowing.Point(2.0, 4.0, 0.0),
+    objs.append(rise.scenario.Shadowing.LineSegment(Position(4.0, 2.0, 0.0),
+                                                    Position(2.0, 4.0, 0.0),
                                                     attenuation = wallAttenuation))
 myPathloss = rise.scenario.Pathloss.PyFunction(
     validFrequencies = Interval(2000, 6000),
@@ -214,7 +214,7 @@ mpAdrs = []
 bssCount = 0
 
 # One AP at (1,1)
-apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(1, 1, 0))
+apConfig = wifimac.support.Node(position = Position(1, 1, 0))
 apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.001))
 ap = nc.createAP(idGen = idGen, managerPool = managerPool, config = apConfig)
 ap.logger.level = commonLoggerLevel
@@ -225,7 +225,7 @@ apAdrs.extend(ap.dll.addresses)
 rang.dll.addAP(ap)
 
 # One MP at (11, 1), traffic from (1,1)
-mpConfig = wifimac.support.Node(position = openwns.geometry.position.Position(11, 1, 0))
+mpConfig = wifimac.support.Node(position = Position(11, 1, 0))
 mpConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.002))
 mp = nc.createMP(idGen = idGen, managerPool = managerPool, config = mpConfig)
 mp.logger.level = commonLoggerLevel
@@ -252,7 +252,7 @@ mpIDs.append(mp.id)
 mpAdrs.extend(mp.dll.addresses)
 
 # One AP at (1,11)
-apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(1, 11, 0))
+apConfig = wifimac.support.Node(position = Position(1, 11, 0))
 apConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.003))
 ap = nc.createAP(idGen = idGen, managerPool = managerPool, config = apConfig)
 ap.logger.level = commonLoggerLevel
@@ -263,7 +263,7 @@ apAdrs.extend(ap.dll.addresses)
 rang.dll.addAP(ap)
 
 # One MP at (11, 11), traffic from (1,11)
-mpConfig = wifimac.support.Node(position = openwns.geometry.position.Position(11, 11, 0))
+mpConfig = wifimac.support.Node(position = Position(11, 11, 0))
 mpConfig.transceivers.append(MyMeshTransceiver(beaconDelay = 0.004))
 mp = nc.createMP(idGen = idGen, managerPool = managerPool, config = mpConfig)
 mp.logger.level = commonLoggerLevel

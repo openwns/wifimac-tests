@@ -145,8 +145,8 @@ managerPool = wifimac.support.ChannelManagerPool(scenario = scenario,
 # single wall from (0,5) to (wallLength,5)
 objs = []
 objs.append(rise.scenario.Shadowing.LineSegment(
-        rise.scenario.Shadowing.Point(0.0, 5.0, 0.0),
-        rise.scenario.Shadowing.Point(wallLength, 5.0, 0.0),
+        openwns.geometry.Position(0.0, 5.0, 0.0),
+        openwns.geometry.Position(wallLength, 5.0, 0.0),
         attenuation = dB(100)))
 # End create scenario
 #####################
@@ -211,7 +211,7 @@ for yPos in [0.0, 10.0]:
     #end example
 
     # begin example "wifimac.tutorial.experiment4.config.NodeCreation.AP"
-    apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(5,yPos,0))
+    apConfig = wifimac.support.Node(position = openwns.geometry.Position(5,yPos,0))
     apConfig.transceivers.append(MyAPTransceiver(beaconDelay = 0.001+yPos*0.001))
     ap = nc.createAP(idGen, managerPool, apConfig)
     ap.logger.level = commonLoggerLevel
@@ -224,7 +224,7 @@ for yPos in [0.0, 10.0]:
     # end example
 
     # begin example "wifimac.tutorial.experiment4.config.NodeCreation.STA.node"
-    staConfig = MySTATransceiver(position = openwns.geometry.position.Position(25, yPos, 0))
+    staConfig = MySTATransceiver(position = openwns.geometry.Position(25, yPos, 0))
     sta = nc.createSTA(idGen, managerPool, rang, config = staConfig,
                        loggerLevel = commonLoggerLevel,
                        dllLoggerLevel = dllLoggerLevel)
