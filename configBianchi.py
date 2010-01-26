@@ -52,7 +52,7 @@ simTime += settlingTime
 commonLoggerLevel = 1
 dllLoggerLevel = 2
 
-numSTAs = 3
+numSTAs = 10
 distance = 5.0
 
 # load (IP Header size is set to 0)
@@ -89,6 +89,9 @@ class MySTATransceiver(wifimac.support.Transceiver.Station):
         self.layer2.ackTimeout = self.layer2.sifsDuration + self.layer2.maximumACKDuration + self.layer2.slotDuration
         self.layer2.ctsTimeout = self.layer2.sifsDuration + self.layer2.maximumCTSDuration + self.layer2.slotDuration
 
+        # the retry counter (and thus the cw) is reseted for every compound
+        self.layer2.arq.bianchiRetryCounter = True
+
         # we change the behavior of the frameSync so that EIFS will be done although the frame could not be indentified as one
         self.layer2.frameSynchronization.signalRxErrorAlthoughNotSynchronized = True
 
@@ -114,7 +117,7 @@ WNS.probesWriteInterval = 3600 # in seconds realTime
 
 #################
 # Create scenario
-scenario = rise.Scenario.Scenario(xmin=0,ymin=0,xmax=distance, ymax=1)
+scenario = rise.Scenario.Scenario()
 
 riseConfig = WNS.modules.rise
 riseConfig.debug.transmitter = (commonLoggerLevel > 1)
@@ -183,12 +186,12 @@ apTransceiver.txPower = dBm(25) #jen: 20
 # set the inital start delay of the beacon so that beacons
 # from multiple APs do not collide
 apTransceiver.layer2.beacon.delay = 0.001
+# No beacons shall be transmitted after the first one
+apTransceiver.layer2.beacon.period = simTime * 2
 # rate adaptation strategy: Constant with default BPSK 1/2
 apTransceiver.layer2.ra.raStrategy =  Constant(wifimac.convergence.PhyMode.makeBasicPhyMode("BPSK", "1/2", dB(6.0)))
 # For frames above this threshold (in bit) RTS/CTS will be used
 apTransceiver.layer2.rtsctsThreshold = 1;
-# No beacons are transmitted after the first one
-apTransceiver.layer2.beacon.period = simTime * 2
 
 ## Create AP node
 apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(0, 0, 0))
@@ -249,23 +252,23 @@ node = node.appendChildren(TimeSeries(name = 'ip.endToEnd.window.incoming.bitThr
                                       description = "UL Throughput [bit/s]"))
 
 
-## debugging probes, activate if required
-#node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.msduSuccessRate')
-#node = node.appendChildren(Accept(by = 'MAC.CompoundIsForMe', ifIn = [1]))
-#node = node.appendChildren(Accept(by = 'MAC.CompoundIsUnicast', ifIn = [1]))
-#node = node.appendChildren(SettlingTimeGuard(settlingTime))
-#node = node.appendChildren(Moments(name = 'wifimac.linkQuality.msduSuccessRate',
-#                                   description = "MSDU Success Rate"))
+# debugging probes, activate if required
+node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.msduSuccessRate')
+node = node.appendChildren(Accept(by = 'MAC.CompoundIsForMe', ifIn = [1]))
+node = node.appendChildren(Accept(by = 'MAC.CompoundIsUnicast', ifIn = [1]))
+node = node.appendChildren(SettlingTimeGuard(settlingTime))
+node = node.appendChildren(Moments(name = 'wifimac.linkQuality.msduSuccessRate',
+                                   description = "MSDU Success Rate"))
 
-#node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.rtsSuccess')
-#node = node.appendChildren(SettlingTimeGuard(settlingTime))
-#node = node.appendChildren(Moments(name = 'wifimac.linkQuality.rtsSuccess',
-#                                   description = "RTS Success Rate"))
+node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.rtsSuccess')
+node = node.appendChildren(SettlingTimeGuard(settlingTime))
+node = node.appendChildren(Moments(name = 'wifimac.linkQuality.rtsSuccess',
+                                   description = "RTS Success Rate"))
 
-#node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.numTxAttempts')
-#node = node.appendChildren(SettlingTimeGuard(settlingTime))
-#node.appendChildren(PDF(minXValue = 0.0, maxXValue = 100, resolution=1000,
-#                        name = "wifimac.linkQuality.numTxAttempts",
-#                        description = "Number of Tx Attempts"))
+node = openwns.evaluation.createSourceNode(WNS, 'wifimac.linkQuality.numTxAttempts')
+node = node.appendChildren(SettlingTimeGuard(settlingTime))
+node.appendChildren(PDF(minXValue = 0.0, maxXValue = 100, resolution=1000,
+                        name = "wifimac.linkQuality.numTxAttempts",
+                        description = "Number of Tx Attempts"))
 
 openwns.setSimulator(WNS)

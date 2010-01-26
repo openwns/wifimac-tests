@@ -80,9 +80,9 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 disabledReason = "Disabled by command-line switch"))
 
 testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
-                                                configFile = 'configJEN.py',
+                                                configFile = 'configBianchi.py',
                                                 runSimulations = True,
-                                                shortDescription = 'Circular UL in honour of JEN',
+                                                shortDescription = 'Bianchi Model setup',
                                                 requireReferenceOutput = True,
                                                 disabled = (len(enabled) > 0) and (5 not in enabled),
                                                 disabledReason = "Disabled by command-line switch"))
@@ -140,6 +140,14 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 disabled = (len(enabled) > 0) and (11 not in enabled),
                                                 disabledReason = "Disabled by command-line switch",
                                                 workingDir = "PyConfig/experiment7"))
+
+testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
+                                                configFile = 'configInterference.py',
+                                                runSimulations = True,
+                                                shortDescription = 'Interference Characterization Setup',
+                                                requireReferenceOutput = True,
+                                                disabled = (len(enabled) > 0) and (12 not in enabled),
+                                                disabledReason = "Disabled by command-line switch"))
 if __name__ == '__main__':
     # This is only evaluated if the script is called by hand
 

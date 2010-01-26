@@ -1,0 +1,29 @@
+#  PROBE RESULTS (THIS IS A MAGIC LINE)
+# ---------------------------------------------------------------------------
+# Evaluation: Moments
+# ---------------------------------------------------------------------------
+#  Name: wifimac.linkQuality.rtsSuccess
+#  Description: RTS Success Rate
+# ---------------------------------------------------------------------------
+#  Evaluation terminated successfully!
+# ---------------------------------------------------------------------------
+#  Common Statistics 
+#  Minimum: 0.0000000
+#  Maximum: 1.0000000
+#  Trials: 974
+#  Mean: 0.6098563
+# 
+#  Variance: 0.2381761
+#  Relative variance: 0.6403881
+#  Coefficient of variation: 0.8002425
+#  Standard deviation: 0.4880329
+#  Relative standard deviation: 0.8002425
+# 
+#  Skewness: -0.4497380
+# 
+#  2nd moment: 0.6098563
+#  3rd moment: 0.6098563
+# 
+#  Sum of all values: 594.0000000
+#  (Sum of all values)^2: 594.0000000
+#  (Sum of all values)^3: 594.0000000

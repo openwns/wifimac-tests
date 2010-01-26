@@ -129,7 +129,7 @@ WNS.probesWriteInterval = 3600 # in seconds realTime
 # Create scenario
 sizeX = 30
 sizeY = 10
-scenario = rise.Scenario.Scenario(xmin=0,ymin=0,xmax=sizeX, ymax=sizeY)
+scenario = rise.Scenario.Scenario()
 
 riseConfig = WNS.modules.rise
 riseConfig.debug.transmitter = (commonLoggerLevel > 1)
@@ -144,7 +144,10 @@ managerPool = wifimac.support.ChannelManagerPool(scenario = scenario,
 # begin example "wifimac.tutorial.experiment4.config.scenario.createWallObj"
 # single wall from (0,5) to (wallLength,5)
 objs = []
-objs.append(rise.scenario.Shadowing.Shape2D(pointA = [0.0, 5.0, 0.0], pointB = [wallLength, 5.0, 0.0], attenuation = dB(100)))
+objs.append(rise.scenario.Shadowing.LineSegment(
+        openwns.geometry.Position(0.0, 5.0, 0.0),
+        openwns.geometry.Position(wallLength, 5.0, 0.0),
+        attenuation = dB(100)))
 # End create scenario
 #####################
 # end example
@@ -165,10 +168,7 @@ myPathloss = rise.scenario.Pathloss.PyFunction(
     scenarioWrap = False,
     sizeX = sizeX,
     sizeY = sizeY)
-myShadowing = rise.scenario.Shadowing.Objects(obstructionList = objs,
-                                              xGridBlocks = 1,
-                                              yGridBlocks = 1,
-                                              scenario = scenario)
+myShadowing = rise.scenario.Shadowing.Objects(obstructionList = objs)
 myFastFading = rise.scenario.FastFading.No()
 propagationConfig = rise.scenario.Propagation.Configuration(
     pathloss = myPathloss,
@@ -211,7 +211,7 @@ for yPos in [0.0, 10.0]:
     #end example
 
     # begin example "wifimac.tutorial.experiment4.config.NodeCreation.AP"
-    apConfig = wifimac.support.Node(position = openwns.geometry.position.Position(5,yPos,0))
+    apConfig = wifimac.support.Node(position = openwns.geometry.Position(5,yPos,0))
     apConfig.transceivers.append(MyAPTransceiver(beaconDelay = 0.001+yPos*0.001))
     ap = nc.createAP(idGen, managerPool, apConfig)
     ap.logger.level = commonLoggerLevel
@@ -224,7 +224,7 @@ for yPos in [0.0, 10.0]:
     # end example
 
     # begin example "wifimac.tutorial.experiment4.config.NodeCreation.STA.node"
-    staConfig = MySTATransceiver(position = openwns.geometry.position.Position(25, yPos, 0))
+    staConfig = MySTATransceiver(position = openwns.geometry.Position(25, yPos, 0))
     sta = nc.createSTA(idGen, managerPool, rang, config = staConfig,
                        loggerLevel = commonLoggerLevel,
                        dllLoggerLevel = dllLoggerLevel)
