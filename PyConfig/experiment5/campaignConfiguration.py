@@ -121,6 +121,6 @@ print "%d new / %d waiting / %d finished simulations" %(status['new'],
 if(status['new'] > 0):
     subprocess.call(['./simcontrol.py --create-scenarios'],
                     shell = True)
-    subprocess.call(['./simcontrol.py --execute-locally-with-state=NotQueued'],
+    subprocess.call(['./simcontrol.py --execute-locally --restrict-state=NotQueued'],
                     shell = True)
 # end example
