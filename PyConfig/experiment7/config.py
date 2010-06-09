@@ -47,7 +47,7 @@ import rise.Scenario
 #######################
 # Simulation parameters
 #
-from SimConfig import params
+from openwns.wrowser.simdb.SimConfig import params
 simTime = params.simTime
 settlingTime = 2.0
 commonLoggerLevel = 2
