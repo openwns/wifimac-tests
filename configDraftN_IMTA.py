@@ -43,14 +43,14 @@ dllLoggerLevel = 2
 
 # length of the string
 numMPs = 0
-numSTAs = 1
+numSTAs = 2
 numAPs = 1
-distanceBetweenMPs = 50
-verticalDistanceSTAandMP = 50
+distanceBetweenMPs = 0
+verticalDistanceSTAandMP = 7
 
 # load
 meanPacketSize = 1480 * 8
-offeredDL = 50.0e6
+offeredDL = 100.0e6
 offeredUL = 1.0e6
 ulIsActive = False
 dlIsActive = True

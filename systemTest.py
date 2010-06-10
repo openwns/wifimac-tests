@@ -148,6 +148,14 @@ testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..',
                                                 requireReferenceOutput = True,
                                                 disabled = (len(enabled) > 0) and (12 not in enabled),
                                                 disabledReason = "Disabled by command-line switch"))
+
+testSuite.addTest(pywns.WNSUnit.ProbesTestSuite(sandboxPath = os.path.join('..', '..', '..', 'sandbox'),
+                                                configFile = 'configDraftN_IMTA.py',
+                                                runSimulations = True,
+                                                shortDescription = 'Correlated MIMO DraftN',
+                                                requireReferenceOutput = True,
+                                                disabled = (len(enabled) > 0) and (13 not in enabled),
+                                                disabledReason = "Disabled by command-line switch"))
 if __name__ == '__main__':
     # This is only evaluated if the script is called by hand
 
