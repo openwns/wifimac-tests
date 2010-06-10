@@ -25,6 +25,12 @@
 #
 ###############################################################################
 
+# This trick assures we use the dummy parameters in 
+# ./openwns/wrowser/simdb/SimConfig when in systemTest. 
+import sys
+import os
+sys.path.insert(0, os.getcwd())
+
 # begin example "wifimac.tutorial.experiment3.config.imports"
 import random
 random.seed(22)
