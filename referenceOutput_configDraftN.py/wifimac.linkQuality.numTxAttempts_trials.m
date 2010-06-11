@@ -9,4 +9,4 @@
 % 2. Column: MAC.CompoundTargetAddress
 % 3. Column: value
 
-1	3	423
+1	3	422
