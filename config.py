@@ -99,9 +99,6 @@ class MySTAConfig(wifimac.support.Transceiver.Station):
 ###########################################
 # Scenario setup etc. is in configCommon.py
 execfile('configCommon.py')
-#Enable Warp2Gui output
-node = openwns.evaluation.createSourceNode(WNS, "wifimac.guiProbe")
-node.appendChildren(openwns.evaluation.generators.TextTrace("wifimac.guiText", ""))
 
 
 node = openwns.evaluation.getSourceNode(WNS, 'ip.endToEnd.window.incoming.bitThroughput')
@@ -113,3 +110,8 @@ node.appendChildren(openwns.evaluation.PDF(minXValue = 0.0, maxXValue = offeredD
                                            description = 'Throughput [Mb/s]'))
 node.appendChildren(openwns.evaluation.TimeSeries(name = 'ip.endToEnd.window.incoming.bitThroughput',
                                                   description = "Throughput"))
+
+# New Wrowser CouchDB feature available from Ubuntu Linux 10.04 on
+node = openwns.evaluation.createSourceNode(WNS, "wifimac.linkQuality.phyTrace") 
+node.getLeafs().appendChildren(
+    openwns.evaluation.JSONTrace(key="__json__", description="JSON testing in PhyUser"))
