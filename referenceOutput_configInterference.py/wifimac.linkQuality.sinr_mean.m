@@ -2,10 +2,10 @@
 % 
 % Dimensions:
 % 
-% Dim 4: 'MAC.CompoundSourceAddress'
-% Dim 3: 'MAC.CompoundTargetAddress'
-% Dim 2: 'MAC.CompoundSpatialStreams'
-% Dim 1: 'MAC.CompoundDBPS'
+% Dim 1: 'MAC.CompoundSourceAddress'
+% Dim 2: 'MAC.CompoundTargetAddress'
+% Dim 3: 'MAC.CompoundSpatialStreams'
+% Dim 4: 'MAC.CompoundDBPS'
 % 
 % 1. Column: MAC.CompoundSourceAddress
 % 2. Column: MAC.CompoundTargetAddress

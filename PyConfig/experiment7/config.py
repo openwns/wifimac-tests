@@ -45,7 +45,6 @@ import constanze.node
 import wifimac.support
 import wifimac.evaluation.default
 import wifimac.evaluation.ip
-from wifimac.lowerMAC.RateAdaptation import SINRwithMIMO, Opportunistic
 
 import rise.Scenario
 # end example

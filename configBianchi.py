@@ -39,7 +39,7 @@ import wifimac.support
 import wifimac.evaluation.default
 import wifimac.evaluation.ip
 import wifimac.convergence.PhyMode
-from wifimac.lowerMAC.RateAdaptation import Opportunistic, Constant
+from wifimac.lowerMAC.RateAdaptation import ARF, Constant
 
 import rise.Scenario
 
