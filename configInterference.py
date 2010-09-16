@@ -27,7 +27,7 @@
 import openwns
 
 import wifimac.support.Transceiver
-from wifimac.lowerMAC.RateAdaptation import Opportunistic, Constant, SINR
+from wifimac.lowerMAC.RateAdaptation import PER, Constant, SINR
 import wifimac.convergence.PhyMode
 
 #######################
@@ -80,8 +80,8 @@ class MyMeshTransceiver(wifimac.support.Transceiver.Mesh):
 
         if(params.raStrategy == 'Constant'):
             self.layer2.ra.raStrategy = Constant(wifimac.convergence.PhyMode.makeBasicPhyMode("QAM64", "3/4", dB(24.8)))
-        elif(params.raStrategy == 'Opportunistic'):
-            self.layer2.ra.raStrategy = Opportunistic()
+        elif(params.raStrategy == 'PER'):
+            self.layer2.ra.raStrategy = PER()
         elif(params.raStrategy == 'SINR'):
             self.layer2.ra.raStrategy = SINR()
 

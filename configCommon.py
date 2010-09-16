@@ -260,4 +260,5 @@ wifimac.evaluation.ip.installEvaluation(sim = WNS,
                                         settlingTime = settlingTime,
                                         maxPacketDelay = 0.1,     # s
                                         maxBitThroughput = (numSTAs+1)*(offeredDL+offeredUL))  # Bit/s
+
 openwns.setSimulator(WNS)

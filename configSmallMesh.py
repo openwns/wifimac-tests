@@ -27,7 +27,7 @@
 import openwns
 
 import wifimac.support.Transceiver
-from wifimac.lowerMAC.RateAdaptation import Opportunistic, SINR
+from wifimac.lowerMAC.RateAdaptation import PER, SINR
 
 #######################
 # Simulation parameters
@@ -89,7 +89,7 @@ class MyBSSTransceiver(wifimac.support.Transceiver.Mesh):
     def __init__(self, beaconDelay, frequency):
         super(MyBSSTransceiver, self).__init__(frequency)
         self.layer2.beacon.delay = beaconDelay
-        self.layer2.ra.raStrategy = Opportunistic()
+        self.layer2.ra.raStrategy = PER()
         self.layer2.bufferSize = 50
 
 
@@ -105,7 +105,7 @@ class MySTAConfig(wifimac.support.Transceiver.Station):
                                           position = position,
                                           scanFrequencies = scanFrequencies,
                                           scanDuration = scanDurationPerFrequency)
-        self.layer2.ra.raStrategy = Opportunistic()
+        self.layer2.ra.raStrategy = PER()
 
         if(rtscts):
             self.layer2.rtsctsThreshold = meanPacketSize/2

@@ -45,7 +45,7 @@ import constanze.node
 import wifimac.support
 import wifimac.evaluation.default
 import wifimac.evaluation.ip
-from wifimac.lowerMAC.RateAdaptation import Opportunistic
+from wifimac.lowerMAC.RateAdaptation import ARF
 
 import rise.Scenario
 # end example
@@ -167,8 +167,8 @@ apTransceiver.txPower = dBm(20)
 # set the inital start delay of the beacon so that beacons
 # from multiple APs do not collide
 apTransceiver.layer2.beacon.delay = 0.001
-# rate adaptation strategy: PER based
-apTransceiver.layer2.ra.raStrategy = Opportunistic()
+# rate adaptation strategy: ARF
+apTransceiver.layer2.ra.raStrategy = ARF()
 # For frames above this threshold (in bit) RTS/CTS will be used
 apTransceiver.layer2.rtsctsThreshold = 8e6
 
@@ -194,8 +194,8 @@ staConfig = wifimac.support.Transceiver.Station(frequency = networkFrequency,
                                                 scanDuration = 0.3)
 # Transmission power
 staConfig.txPower = dBm(20)
-# rate adaptation strategy: PER based
-staConfig.layer2.ra.raStrategy = Opportunistic()
+# rate adaptation strategy: ARF based
+staConfig.layer2.ra.raStrategy = ARF()
 # For frames above this threshold (in bit) RTS/CTS will be used
 staConfig.layer2.rtsctsThreshold = 8e6
 

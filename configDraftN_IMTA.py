@@ -27,7 +27,7 @@
 import openwns
 
 import wifimac.support.Transceiver
-from wifimac.lowerMAC.RateAdaptation import OpportunisticwithMIMO, SINRwithMIMO
+from wifimac.lowerMAC.RateAdaptation import PERwithMIMO, SINRwithMIMO
 
 #######################
 # Simulation parameters

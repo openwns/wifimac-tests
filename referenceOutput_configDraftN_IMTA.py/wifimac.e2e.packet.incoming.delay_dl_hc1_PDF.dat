@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Evaluation: PDF
 # ---------------------------------------------------------------------------
-#  Name: wifimac.e2e.packet.incoming.delay
+#  Name: wifimac.hop.packet.incoming.delay
 #  Description: Incoming packet delay [s]
 # ---------------------------------------------------------------------------
 #  Evaluation terminated successfully!
