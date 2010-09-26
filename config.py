@@ -113,10 +113,10 @@ node.appendChildren(openwns.evaluation.TimeSeries(name = 'ip.endToEnd.window.inc
 
 # New Wrowser CouchDB feature available from Ubuntu Linux 10.04 on
 
-#begin example "wifimac.test.couchdb"
+# begin example "wifimac.test.couchdb"
 
 node = openwns.evaluation.createSourceNode(WNS, "wifimac.linkQuality.phyTrace") 
 node.getLeafs().appendChildren(
     openwns.evaluation.JSONTrace(key="__json__", description="JSON testing in PhyUser"))
 
-#end example
+# end example
